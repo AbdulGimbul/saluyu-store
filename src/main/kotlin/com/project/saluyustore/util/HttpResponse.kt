@@ -28,28 +28,27 @@ class HttpResponse<T> : Serializable {
 
     companion object {
         private const val serialVersionUID = 8987326349450405819L
-        fun <T> response(
-            data: T,
-            message: String?,
-            total: Int?,
-            status: HttpStatus
-        ): ResponseEntity<HttpResponse<Any>> {
+        fun <T> response(data: T, message: String?, total: Int?, status: HttpStatus): ResponseEntity<HttpResponse<Any>> {
             val httpResponse = HttpResponse<Any>()
-            httpResponse.data = data
-            httpResponse.message = message
-            httpResponse.totalRow = total
-            httpResponse.timestamp = Date()
-            httpResponse.status = status.value()
+            httpResponse.apply {
+                this.data = data
+                this.message = message
+                this.totalRow = total
+                this.timestamp = Date()
+                this.status = status.value()
+            }
 
             return ResponseEntity.status(status.value()).body(httpResponse)
         }
 
         fun <T> response(data: T, total: Int?, status: HttpStatus): ResponseEntity<HttpResponse<Any>> {
             val httpResponse = HttpResponse<Any>()
-            httpResponse.data = data
-            httpResponse.totalRow = total
-            httpResponse.timestamp = Date()
-            httpResponse.status = status.value()
+            httpResponse.apply {
+                this.data = data
+                this.totalRow = total
+                this.timestamp = Date()
+                this.status = status.value()
+            }
 
             return ResponseEntity.status(status.value()).body(httpResponse)
         }
@@ -59,36 +58,30 @@ class HttpResponse<T> : Serializable {
             httpResponse.apply {
                 this.data = data
                 this.message = message
+                this.timestamp = Date()
                 this.status = status.value()
             }
-
-//            with(httpResponse){
-//                this.data = data
-//                this.message = message
-//                this.status = status.value()
-//            }
-
             return ResponseEntity.status(status.value()).body(httpResponse)
         }
 
         fun <T> response(data: T, status: HttpStatus): ResponseEntity<HttpResponse<Any>> {
-            return ResponseEntity.status(status.value()).body<HttpResponse<Any>>(
-                HttpResponse.builder<Any>()
-                    .data(data)
-                    .timestamp(Date())
-                    .status(status.value())
-                    .build()
-            )
+            val httpResponse = HttpResponse<Any>()
+            httpResponse.apply {
+                this.data = data
+                this.timestamp = Date()
+                this.status = status.value()
+            }
+            return ResponseEntity.status(status.value()).body(httpResponse)
         }
 
         fun <T> response(message: String?, status: HttpStatus): ResponseEntity<HttpResponse<Any>> {
-            return ResponseEntity.status(status.value()).body<HttpResponse<Any>>(
-                HttpResponse.builder<Any>()
-                    .message(message)
-                    .timestamp(Date())
-                    .status(status.value())
-                    .build()
-            )
+            val httpResponse = HttpResponse<Any>()
+            httpResponse.apply {
+                this.message = message
+                this.timestamp = Date()
+                this.status = status.value()
+            }
+            return ResponseEntity.status(status.value()).body(httpResponse)
         }
     }
 }

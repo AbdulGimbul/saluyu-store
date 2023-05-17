@@ -1,87 +1,94 @@
-package com.project.saluyustore.util;
+package com.project.saluyustore.util
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
-import java.io.Serializable;
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonInclude
+import lombok.AllArgsConstructor
+import lombok.Builder
+import lombok.Data
+import lombok.NoArgsConstructor
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import java.io.Serializable
+import java.util.*
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HttpResponse<T> implements Serializable {
-    private static final long serialVersionUID = 8987326349450405819L;
+class HttpResponse<T> : Serializable {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private var data: T? = null
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private T data;
+    private var message: String? = null
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String message;
+    private var totalRow: Int? = null
+    private var timestamp: Date? = null
+    private var status: Int? = null
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer totalRow;
+    companion object {
+        private const val serialVersionUID = 8987326349450405819L
+        fun <T> response(
+            data: T,
+            message: String?,
+            total: Int?,
+            status: HttpStatus
+        ): ResponseEntity<HttpResponse<Any>> {
+            val httpResponse = HttpResponse<Any>()
+            httpResponse.data = data
+            httpResponse.message = message
+            httpResponse.totalRow = total
+            httpResponse.timestamp = Date()
+            httpResponse.status = status.value()
 
-    private Date timestamp;
+            return ResponseEntity.status(status.value()).body(httpResponse)
+        }
 
-    private Integer status;
+        fun <T> response(data: T, total: Int?, status: HttpStatus): ResponseEntity<HttpResponse<Any>> {
+            val httpResponse = HttpResponse<Any>()
+            httpResponse.data = data
+            httpResponse.totalRow = total
+            httpResponse.timestamp = Date()
+            httpResponse.status = status.value()
 
-    public static <T> ResponseEntity<HttpResponse<Object>> response(T data, String message, Integer total, HttpStatus status) {
-        return ResponseEntity.status(status.value()).body(
-                HttpResponse.builder()
-                        .data(data)
-                        .message(message)
-                        .totalRow(total)
-                        .timestamp(new Date())
-                        .status(status.value())
-                        .build()
-        );
-    }
+            return ResponseEntity.status(status.value()).body(httpResponse)
+        }
 
-    public static <T> ResponseEntity<HttpResponse<Object>> response(T data, Integer total, HttpStatus status) {
-        return ResponseEntity.status(status.value()).body(
-                HttpResponse.builder()
-                        .data(data)
-                        .totalRow(total)
-                        .timestamp(new Date())
-                        .status(status.value())
-                        .build()
-        );
-    }
+        fun <T> response(data: T, message: String?, status: HttpStatus): ResponseEntity<HttpResponse<Any>> {
+            val httpResponse = HttpResponse<Any>()
+            httpResponse.apply {
+                this.data = data
+                this.message = message
+                this.status = status.value()
+            }
 
-    public static <T> ResponseEntity<HttpResponse<Object>> response(T data, String message, HttpStatus status) {
-        return ResponseEntity.status(status.value()).body(
-                HttpResponse.builder()
-                        .data(data)
-                        .message(message)
-                        .timestamp(new Date())
-                        .status(status.value())
-                        .build()
-        );
-    }
+//            with(httpResponse){
+//                this.data = data
+//                this.message = message
+//                this.status = status.value()
+//            }
 
-    public static <T> ResponseEntity<HttpResponse<Object>> response(T data, HttpStatus status) {
-        return ResponseEntity.status(status.value()).body(
-                HttpResponse.builder()
-                        .data(data)
-                        .timestamp(new Date())
-                        .status(status.value())
-                        .build()
-        );
-    }
+            return ResponseEntity.status(status.value()).body(httpResponse)
+        }
 
-    public static <T> ResponseEntity<HttpResponse<Object>> response(String message, HttpStatus status) {
-        return ResponseEntity.status(status.value()).body(
-                HttpResponse.builder()
-                        .message(message)
-                        .timestamp(new Date())
-                        .status(status.value())
-                        .build()
-        );
+        fun <T> response(data: T, status: HttpStatus): ResponseEntity<HttpResponse<Any>> {
+            return ResponseEntity.status(status.value()).body<HttpResponse<Any>>(
+                HttpResponse.builder<Any>()
+                    .data(data)
+                    .timestamp(Date())
+                    .status(status.value())
+                    .build()
+            )
+        }
+
+        fun <T> response(message: String?, status: HttpStatus): ResponseEntity<HttpResponse<Any>> {
+            return ResponseEntity.status(status.value()).body<HttpResponse<Any>>(
+                HttpResponse.builder<Any>()
+                    .message(message)
+                    .timestamp(Date())
+                    .status(status.value())
+                    .build()
+            )
+        }
     }
 }

@@ -1,87 +1,58 @@
 package com.project.saluyustore.util
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import lombok.AllArgsConstructor
-import lombok.Builder
-import lombok.Data
-import lombok.NoArgsConstructor
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import java.io.Serializable
 import java.util.*
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-class HttpResponse<T> : Serializable {
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private var data: T? = null
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private var message: String? = null
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private var totalRow: Int? = null
-    private var timestamp: Date? = null
-    private var status: Int? = null
-
+class HttpResponse {
     companion object {
-        private const val serialVersionUID = 8987326349450405819L
-        fun <T> response(data: T, message: String?, total: Int?, status: HttpStatus): ResponseEntity<HttpResponse<Any>> {
-            val httpResponse = HttpResponse<Any>()
-            httpResponse.apply {
-                this.data = data
-                this.message = message
-                this.totalRow = total
-                this.timestamp = Date()
-                this.status = status.value()
+        fun <T> setResp(data: T, message: String, total: Int, status: HttpStatus): ResponseEntity<*> {
+            val httpResp = buildMap {
+                put("data", data)
+                put("message", message)
+                put("totalRow", total)
+                put("timestamp", Date())
+                put("status", status.value())
             }
-
-            return ResponseEntity.status(status.value()).body(httpResponse)
+            return ResponseEntity.status(status.value()).body(httpResp)
         }
 
-        fun <T> response(data: T, total: Int?, status: HttpStatus): ResponseEntity<HttpResponse<Any>> {
-            val httpResponse = HttpResponse<Any>()
-            httpResponse.apply {
-                this.data = data
-                this.totalRow = total
-                this.timestamp = Date()
-                this.status = status.value()
+        fun <T> setResp(data: T, total: Int, status: HttpStatus): ResponseEntity<*> {
+            val httpResp = buildMap {
+                put("data", data)
+                put("totalRow", total)
+                put("timestamp", Date())
+                put("status", status.value())
             }
-
-            return ResponseEntity.status(status.value()).body(httpResponse)
+            return ResponseEntity.status(status.value()).body(httpResp)
         }
 
-        fun <T> response(data: T, message: String?, status: HttpStatus): ResponseEntity<HttpResponse<Any>> {
-            val httpResponse = HttpResponse<Any>()
-            httpResponse.apply {
-                this.data = data
-                this.message = message
-                this.timestamp = Date()
-                this.status = status.value()
+        fun <T> setResp(data: T, message: String, status: HttpStatus): ResponseEntity<*> {
+            val httpResp = buildMap {
+                put("data", data)
+                put("message", message)
+                put("timestamp", Date())
+                put("status", status.value())
             }
-            return ResponseEntity.status(status.value()).body(httpResponse)
+            return ResponseEntity.status(status.value()).body(httpResp)
         }
 
-        fun <T> response(data: T, status: HttpStatus): ResponseEntity<HttpResponse<Any>> {
-            val httpResponse = HttpResponse<Any>()
-            httpResponse.apply {
-                this.data = data
-                this.timestamp = Date()
-                this.status = status.value()
+        fun <T> setResp(data: T, status: HttpStatus): ResponseEntity<*> {
+            val httpResp = buildMap {
+                put("data", data)
+                put("timestamp", Date())
+                put("status", status.value())
             }
-            return ResponseEntity.status(status.value()).body(httpResponse)
+            return ResponseEntity.status(status.value()).body(httpResp)
         }
 
-        fun <T> response(message: String?, status: HttpStatus): ResponseEntity<HttpResponse<Any>> {
-            val httpResponse = HttpResponse<Any>()
-            httpResponse.apply {
-                this.message = message
-                this.timestamp = Date()
-                this.status = status.value()
+        fun <T> setResp(message: String, status: HttpStatus): ResponseEntity<*> {
+            val httpResp = buildMap {
+                put("message", message)
+                put("timestamp", Date())
+                put("status", status.value())
             }
-            return ResponseEntity.status(status.value()).body(httpResponse)
+            return ResponseEntity.status(status.value()).body(httpResp)
         }
     }
 }

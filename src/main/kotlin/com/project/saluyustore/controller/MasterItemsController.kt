@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/v1/master-items")
 class MasterItemsController(private val masterItemsService: MasterItemsService) {
-
     @GetMapping("/get-data")
     fun getData(): ResponseEntity<*> {
         return masterItemsService.getData()

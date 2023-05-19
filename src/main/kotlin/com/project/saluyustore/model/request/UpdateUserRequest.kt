@@ -16,8 +16,8 @@ data class UpdateUserRequest(
     val password: String?,
 
     @field:NotNull
-    val userActive: Boolean?,
+    val userActive: Boolean? = true,
 
     @field:NotNull
-    val userRole: Int?,
+    val userRole: Int? = 2,
 )

@@ -28,8 +28,6 @@ class UserServiceImpl(
             userName = createUserRequest.userName!!,
             email = createUserRequest.email!!,
             password = createUserRequest.password!!,
-            userActive = createUserRequest.userActive!!,
-            userRole = createUserRequest.userRole!!,
             createdAt = Date(),
             createdBy = createUserRequest.userName!!,
             modifyDate = Date(),
@@ -54,8 +52,6 @@ class UserServiceImpl(
             userName = updateUserRequest.userName!!
             email = updateUserRequest.email!!
             password = updateUserRequest.password!!
-            userActive = updateUserRequest.userActive!!
-            userRole = updateUserRequest.userRole!!
             modifyDate = Date()
             modifyBy = ""
         }
@@ -91,8 +87,8 @@ class UserServiceImpl(
             userName = user.userName,
             email = user.email,
             password = user.password,
-            userActive = user.userActive,
-            userRole = user.userRole,
+            userActive = user.userActive!!,
+            userRole = user.userRole!!,
             createdAt = user.createdAt,
             createdBy = user.userName,
             modifyDate = user.modifyDate,

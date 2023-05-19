@@ -7,7 +7,6 @@ import java.util.*
 @Table(name = "masterUsers")
 data class User(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val userId: String,
     @Column(name = "userName")
     var userName: String,
@@ -16,9 +15,9 @@ data class User(
     @Column(name = "password")
     var password: String,
     @Column(name = "userActive")
-    var userActive: Boolean,
+    var userActive: Boolean? = true,
     @Column(name = "userRole")
-    var userRole: Int,
+    var userRole: Int? = 2,
     @Column(name = "createdDate")
     val createdAt: Date,
     @Column(name = "createdBy")

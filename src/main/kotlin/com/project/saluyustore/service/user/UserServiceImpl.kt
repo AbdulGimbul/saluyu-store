@@ -24,14 +24,14 @@ class UserServiceImpl(
         validationUtil.validate(createUserRequest)
 
         val user = User(
-            userId = createUserRequest.userId!!,
+            userId = userRepository.getSeqUserId(),
             userName = createUserRequest.userName!!,
             email = createUserRequest.email!!,
             password = createUserRequest.password!!,
             createdAt = Date(),
-            createdBy = createUserRequest.userName!!,
+            createdBy = createUserRequest.userName,
             modifyDate = Date(),
-            modifyBy = ""
+            modifyBy = createUserRequest.userName,
         )
 
         userRepository.save(user)

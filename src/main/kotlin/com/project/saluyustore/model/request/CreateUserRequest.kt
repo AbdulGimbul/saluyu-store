@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 
 data class CreateUserRequest(
-    val userId: String?,
     @field:NotBlank
     val userName: String?,
     @field:NotBlank

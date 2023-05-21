@@ -6,7 +6,7 @@ import java.util.*
 
 class HttpResponse {
     companion object {
-        fun <T> setResp(data: T, message: String, total: Int, status: HttpStatus): ResponseEntity<*> {
+        fun <T> setResp(data: T?, message: String?, total: Int?, status: HttpStatus): ResponseEntity<*> {
             val httpResp = buildMap {
                 put("data", data)
                 put("message", message)
@@ -17,7 +17,7 @@ class HttpResponse {
             return ResponseEntity.status(status.value()).body(httpResp)
         }
 
-        fun <T> setResp(data: T, total: Int, status: HttpStatus): ResponseEntity<*> {
+        fun <T> setResp(data: T?, total: Int?, status: HttpStatus): ResponseEntity<*> {
             val httpResp = buildMap {
                 put("data", data)
                 put("totalRow", total)
@@ -27,7 +27,7 @@ class HttpResponse {
             return ResponseEntity.status(status.value()).body(httpResp)
         }
 
-        fun <T> setResp(data: T, message: String, status: HttpStatus): ResponseEntity<*> {
+        fun <T> setResp(data: T?, message: String?, status: HttpStatus): ResponseEntity<*> {
             val httpResp = buildMap {
                 put("data", data)
                 put("message", message)
@@ -37,7 +37,7 @@ class HttpResponse {
             return ResponseEntity.status(status.value()).body(httpResp)
         }
 
-        fun <T> setResp(data: T, status: HttpStatus): ResponseEntity<*> {
+        fun <T> setResp(data: T?, status: HttpStatus): ResponseEntity<*> {
             val httpResp = buildMap {
                 put("data", data)
                 put("timestamp", Date())
@@ -46,7 +46,7 @@ class HttpResponse {
             return ResponseEntity.status(status.value()).body(httpResp)
         }
 
-        fun <T> setResp(message: String, status: HttpStatus): ResponseEntity<*> {
+        fun setResp(message: String?, status: HttpStatus): ResponseEntity<*> {
             val httpResp = buildMap {
                 put("message", message)
                 put("timestamp", Date())

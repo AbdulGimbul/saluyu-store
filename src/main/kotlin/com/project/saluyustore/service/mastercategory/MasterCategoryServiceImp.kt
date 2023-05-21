@@ -13,18 +13,26 @@ import org.springframework.stereotype.Service
 @Transactional
 class MasterCategoryServiceImp(val masterCategoryRepository: MasterCategoryRepository) : MasterCategoryService {
     override fun getCategory(): ResponseEntity<*> {
-        val categories = masterCategoryRepository.findAll()
-        if (categories.isEmpty()) {
-            return HttpResponse.setResp(null, "Failed", 0, HttpStatus.INTERNAL_SERVER_ERROR)
+        return try {
+            val categories = masterCategoryRepository.findAll()
+            if (categories.isEmpty()) {
+                throw Exception("Category is empty")
+            }
+            HttpResponse.setResp(categories, "Success", categories.size, HttpStatus.OK)
+        } catch (e: Exception) {
+            return HttpResponse.setResp(null, e.message, 0, HttpStatus.INTERNAL_SERVER_ERROR)
         }
-        return HttpResponse.setResp(categories, "Success", categories.size, HttpStatus.OK)
     }
 
     override fun addCategory(categoryRequest: CategoryRequest): ResponseEntity<*> {
-        val masterCategory = MasterCategory()
-        masterCategory.categoryId = masterCategoryRepository.getSeqCategoryId()
-        masterCategory.categoryDesc = categoryRequest.categoryDesc
-        val saveCategory = masterCategoryRepository.save(masterCategory)
-        return HttpResponse.setResp(saveCategory, "Success", HttpStatus.OK)
+        return try {
+            val masterCategory = MasterCategory()
+            masterCategory.categoryId = masterCategoryRepository.getSeqCategoryId()
+            masterCategory.categoryDesc = categoryRequest.categoryDesc
+            val saveCategory = masterCategoryRepository.save(masterCategory)
+            HttpResponse.setResp(saveCategory, "Success", HttpStatus.OK)
+        } catch (e: Exception) {
+            HttpResponse.setResp(null, e.message, HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 }

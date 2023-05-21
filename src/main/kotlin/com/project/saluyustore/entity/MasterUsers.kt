@@ -5,7 +5,7 @@ import java.util.*
 
 @Entity
 @Table(name = "masterUsers")
-data class User(
+data class MasterUsers(
     @Id
     val userId: String,
     @Column(name = "userName")
@@ -17,7 +17,7 @@ data class User(
     @Column(name = "userActive")
     var userActive: Boolean? = true,
     @Column(name = "userRole")
-    var userRole: Int? = 2,
+    var userRole: Int = 2,
     @Column(name = "createdDate")
     val createdAt: Date,
     @Column(name = "createdBy")

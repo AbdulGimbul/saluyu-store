@@ -2,24 +2,24 @@ package com.project.saluyustore.controller
 
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.ListUserRequest
+import com.project.saluyustore.model.request.LoginUserRequest
 import com.project.saluyustore.model.request.UpdateUserRequest
-import com.project.saluyustore.service.user.UserService
+import com.project.saluyustore.model.response.UserLoginResponse
+import com.project.saluyustore.service.masterusers.MasterUsersService
 import com.project.saluyustore.util.HttpResponse
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class UserController(val userService: UserService) {
+@RequestMapping("/api/users")
+class UserController(val masterUsersService: MasterUsersService) {
 
-    @PostMapping(
-            value = ["/api/users"],
-            produces = ["application/json"],
-            consumes = ["application/json"]
-    )
+    @PostMapping
     fun createUser(@RequestBody body: CreateUserRequest): ResponseEntity<*> {
         return try {
-            val userResponse = userService.create(body)
+            val userResponse = masterUsersService.create(body)
 
             HttpResponse.setResp(userResponse, "Success", HttpStatus.OK)
         } catch (e: Exception) {
@@ -27,13 +27,10 @@ class UserController(val userService: UserService) {
         }
     }
 
-    @GetMapping(
-            value = ["/api/users/{userId}"],
-            produces = ["application/json"]
-    )
+    @GetMapping("/{userId}")
     fun getUser(@PathVariable("userId") userId: String): ResponseEntity<*> {
         return try {
-            val userResponse = userService.get(userId)
+            val userResponse = masterUsersService.get(userId)
 
             HttpResponse.setResp(userResponse, "Success", HttpStatus.OK)
         } catch (e: Exception) {
@@ -41,15 +38,11 @@ class UserController(val userService: UserService) {
         }
     }
 
-    @PutMapping(
-            value = ["/api/users/{userId}"],
-            produces = ["application/json"],
-            consumes = ["application/json"]
-    )
+    @PutMapping("/{userId}")
     fun updateUser(@PathVariable("userId") userId: String,
                    @RequestBody updateUserRequest: UpdateUserRequest): ResponseEntity<*> {
         return try {
-            val userResponse = userService.update(userId, updateUserRequest)
+            val userResponse = masterUsersService.update(userId, updateUserRequest)
 
             HttpResponse.setResp(userResponse, "Success", HttpStatus.OK)
         } catch (e: Exception) {
@@ -57,13 +50,10 @@ class UserController(val userService: UserService) {
         }
     }
 
-    @DeleteMapping(
-            value = ["/api/users/{userId}"],
-            produces = ["application/json"]
-    )
+    @DeleteMapping("/{userId}")
     fun deleteUser(@PathVariable("userId") userId: String): ResponseEntity<*> {
         return try {
-            userService.delete(userId)
+            masterUsersService.delete(userId)
 
             HttpResponse.setResp("Success", HttpStatus.OK)
         } catch (e: Exception) {
@@ -71,18 +61,29 @@ class UserController(val userService: UserService) {
         }
     }
 
-    @GetMapping(
-            value = ["/api/users"],
-            produces = ["application/json"]
-    )
+    @GetMapping
     fun listUsers(@RequestParam(value = "size", defaultValue = "10") size: Int,
                   @RequestParam(value = "page", defaultValue = "0") page: Int): ResponseEntity<*> {
         return try {
             val request = ListUserRequest(page = page, size = size)
-            val responses = userService.list(request)
+            val responses = masterUsersService.list(request)
 
             HttpResponse.setResp(responses, "Success", HttpStatus.OK)
         } catch (e: Exception) {
+            HttpResponse.setResp(null, e.message, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    @PostMapping("/login")
+    fun loginUser(
+        @RequestBody loginUserRequest: LoginUserRequest,
+        httpServletRequest: HttpServletRequest
+    ): ResponseEntity<*>{
+        return try {
+            val loginResponse = masterUsersService.login(loginUserRequest, httpServletRequest)
+
+            HttpResponse.setResp(loginResponse, "Login Success",HttpStatus.OK)
+        } catch (e: Exception){
             HttpResponse.setResp(null, e.message, HttpStatus.BAD_REQUEST)
         }
     }

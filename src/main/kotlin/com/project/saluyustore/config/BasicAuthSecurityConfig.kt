@@ -49,7 +49,7 @@ class BasicAuthSecurityConfig(
     companion object {
         //    private final TokenWhitelist tokenWhitelist;
         val PATH_ARRAY = arrayOf(
-            "/member/**"
+            "/api/users/**"
         )
     }
 }

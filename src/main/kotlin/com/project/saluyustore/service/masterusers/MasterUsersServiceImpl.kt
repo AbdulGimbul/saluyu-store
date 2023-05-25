@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.Date
 import java.util.stream.Collectors
@@ -32,11 +33,13 @@ class MasterUsersServiceImpl(
     override fun create(createUserRequest: CreateUserRequest): UserResponse {
         validationUtil.validate(createUserRequest)
 
+        val passwd = BCryptPasswordEncoder().encode(createUserRequest.password)
+
         val masterUsers = MasterUsers(
             userId = userRepository.getSeqUserId(),
             userName = createUserRequest.userName!!,
             email = createUserRequest.email!!,
-            password = createUserRequest.password!!,
+            password = passwd,
             createdAt = Date(),
             createdBy = createUserRequest.userName,
             modifyDate = Date(),

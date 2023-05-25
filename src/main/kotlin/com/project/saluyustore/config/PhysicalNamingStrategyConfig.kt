@@ -29,9 +29,9 @@ class PhysicalNamingStrategyConfig : PhysicalNamingStrategy {
 
     private fun convertToDoubleQuoted(identifier: Identifier?): Identifier? {
         var newName = identifier?.text
-        if (newName!!.matches(".*[A-Z].*".toRegex())) {
-            newName = "\u0022" + identifier?.text + "\u0022"
+        if (newName != null && newName.matches(".*[A-Z].*".toRegex())) {
+            newName = "\u0022$newName\u0022"
         }
-        return identifier!!.isQuoted.let { Identifier.toIdentifier(newName, it) }
+        return identifier?.isQuoted?.let { Identifier.toIdentifier(newName, it) }
     }
 }

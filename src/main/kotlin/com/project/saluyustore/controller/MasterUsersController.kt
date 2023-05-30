@@ -4,7 +4,6 @@ import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.ListUserRequest
 import com.project.saluyustore.model.request.LoginUserRequest
 import com.project.saluyustore.model.request.UpdateUserRequest
-import com.project.saluyustore.model.response.UserLoginResponse
 import com.project.saluyustore.service.masterusers.MasterUsersService
 import com.project.saluyustore.util.HttpResponse
 import jakarta.servlet.http.HttpServletRequest
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/users")
-class UserController(val masterUsersService: MasterUsersService) {
+class MasterUsersController(val masterUsersService: MasterUsersService) {
 
     @PostMapping
     fun createUser(@RequestBody body: CreateUserRequest): ResponseEntity<*> {

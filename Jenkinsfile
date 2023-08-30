@@ -5,7 +5,6 @@ pipeline {
     agent {
         docker {
             image 'abdl00/gradle-custom-image'
-            args '-p 3000:3000'
         }
     }
     stages {

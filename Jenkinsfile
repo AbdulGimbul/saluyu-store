@@ -10,8 +10,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'ping google.com'
                 sh 'ls'
+                sh 'ping google.com'
                 sh 'gradle clean build -x test --scan'
             }
         }

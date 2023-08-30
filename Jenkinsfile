@@ -5,6 +5,7 @@ pipeline {
     agent {
         docker {
             image 'abdl00/gradle-custom-image'
+            args  '-v /tmp:/tmp'
             reuseNode true
         }
     }
@@ -13,7 +14,7 @@ pipeline {
             steps {
                 sh 'ls'
                 sh 'java --version'
-                sh 'gradle clean build -x test --scan'
+                sh './gradlew clean build -x test --scan'
             }
         }
         stage('Test') {

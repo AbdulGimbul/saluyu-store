@@ -12,13 +12,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'chmod +x ./gradlew'
-                sh './gradlew clean build -x test --scan'
+                sh 'gradle clean build -x test --scan'
             }
         }
         stage('Test') {
             steps {
-                sh './gradlew test'
+                sh 'gradle test'
             }
             post {
                 always {

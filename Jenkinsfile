@@ -12,8 +12,8 @@ pipeline {
             steps {
                 sh 'ls'
                 sh 'java --version'
-                // sh 'chmod +x gradlew'
-                sh 'gradle clean build -x test --scan'
+                sh 'chmod +x gradlew'
+                sh './gradle clean build -x test --scan'
             }
         }
         stage('Test') {

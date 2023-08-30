@@ -5,6 +5,7 @@ pipeline {
     agent {
         docker {
             image 'abdl00/gradle-custom-image'
+            reuseNode true
         }
     }
     stages {

@@ -1,9 +1,10 @@
 pipeline {
-    agent {
-        docker {
-            image 'abdl00/gradle-custom-image'
-        }
-    }
+    agent any
+    // agent {
+    //     docker {
+    //         image 'abdl00/gradle-custom-image'
+    //     }
+    // }
     triggers {
         pollSCM('*/2 * * * *')
     }

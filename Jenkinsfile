@@ -12,12 +12,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh '/opt/gradle/gradle-8.2.1/bin/gradle clean build -x test --scan'
+                sh './gradlew clean build -x test --scan'
             }
         }
         stage('Test') {
             steps {
-                sh 'gradle test'
+                sh './gradlew test'
             }
             post {
                 always {

@@ -5,8 +5,8 @@ pipeline {
     agent {
         docker {
             image 'abdl00/gradle-custom-image'
-            args  '-v /tmp:/tmp'
-            reuseNode true
+            args '-p 3000:3000'
+            args '-v /root/.m2:/root/.m2'
         }
     }
     stages {

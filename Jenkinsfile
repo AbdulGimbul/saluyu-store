@@ -11,7 +11,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'ls'
-                sh 'ping google.com'
+                sh 'java --version'
                 sh 'gradle clean build -x test --scan'
             }
         }

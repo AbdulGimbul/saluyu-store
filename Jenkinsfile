@@ -4,7 +4,7 @@ pipeline {
     }
     agent {
         docker {
-            image 'abdl00/custom-image'
+            image 'abdl00/gradle-custom-image'
             args '-v /root/.m2:/root/.m2'
         }
     }

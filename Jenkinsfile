@@ -15,6 +15,8 @@ pipeline {
         }
         stage('Test') {
             steps {
+                sh 'ping google.com'
+                sh 'ls'
                 sh 'gradle test'
             }
             post {

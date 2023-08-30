@@ -12,8 +12,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'chmod +x ./gradlew'
-                sh './gradlew clean build -x test --scan'
+                sh '/opt/gradle/gradle-8.2.1/bin/gradle clean build -x test --scan'
             }
         }
         stage('Test') {

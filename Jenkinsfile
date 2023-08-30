@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh '/opt/gradle/bin/gradle clean build -x test'
+                sh '/opt/gradle/gradle-8.2.1/gradle clean build -x test'
             }
         }
         stage('Test') {

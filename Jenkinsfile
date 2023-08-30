@@ -13,7 +13,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'ls'
-                sh '/opt/gradle/gradle-8.2.1/bin/gradle clean build -x test'
+                sh '/opt/gradle/gradle-8.2.1/bin/gradle clean build -x test --scan'
             }
         }
         stage('Test') {

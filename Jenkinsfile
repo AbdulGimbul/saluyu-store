@@ -10,13 +10,13 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                sh 'ping google.com'
+                sh 'ls'
                 sh 'gradle clean build -x test --scan'
             }
         }
         stage('Test') {
             steps {
-                sh 'ping google.com'
-                sh 'ls'
                 sh 'gradle test'
             }
             post {

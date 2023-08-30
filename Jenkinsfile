@@ -2,13 +2,12 @@ pipeline {
     triggers {
         pollSCM('*/2 * * * *')
     }
-    agent any
-    // agent {
-    //     docker {
-    //         image 'abdl00/gradle-custom-image'
-    //         args '-v /root/.m2:/root/.m2'
-    //     }
-    // }
+    agent {
+        docker {
+            image 'abdl00/maven-custom-image'
+            args '-v /root/.m2:/root/.m2'
+        }
+    }
     stages {
         stage('Build') {
             steps {

@@ -39,7 +39,7 @@ pipeline {
 
                     sshagent(credentials: ['jenkins-to-aws']) {
                         sh "scp -o StrictHostKeyChecking=no -i ${jarPath} ${deployPath} app@${ec2PublicIp}:${remoteDir}/"
-                        sh "ssh -o StrictHostKeyChecking=no -i app@${ec2PublicIp} 'bash ${remoteDir}/${deployScript}'"
+                        sh "ssh -o StrictHostKeyChecking=no -i ./jenkins/scripts/abdl_aws_key.pem app@${ec2PublicIp} 'bash ${remoteDir}/${deployScript}'"
                     }
                     sleep 60
                 }

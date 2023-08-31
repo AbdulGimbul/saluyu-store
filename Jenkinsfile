@@ -10,12 +10,16 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'gradle clean build -x test'
+                sh 'ls'
+                sh 'java --version'
+                sh 'chmod +x ./gradlew'
+                sh './gradlew clean build -x test'
+                sh './gradlew clean build -x test'
             }
         }
         stage('Test') {
             steps {
-                sh 'gradle test'
+                sh './gradlew test'
             }
             post {
                 always {

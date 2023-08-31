@@ -19,15 +19,15 @@ pipeline {
                 }
             }
         }
-        stage('Manual Approval') {
-            input {
-                message "Lanjutkan ke tahap Deploy?"
-                ok "Yes, of course"
-            }
-            steps {
-                echo "Let's go"
-            }
-        }
+        // stage('Manual Approval') {
+        //     input {
+        //         message "Lanjutkan ke tahap Deploy?"
+        //         ok "Yes, of course"
+        //     }
+        //     steps {
+        //         echo "Let's go"
+        //     }
+        // }
         stage('Deploy') {
             steps {
                 script {

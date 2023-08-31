@@ -1,6 +1,6 @@
 #!/bin/bash
-if pgrep -f saluyustore-service.jar; then
-    pkill -f saluyustore-service.jar
+if pgrep -f saluyustore-0.0.1.jar; then
+    pkill -f saluyustore-0.0.1.jar
 fi
 cd app
-java -jar saluyustore-service.jar &
+java -jar saluyustore-0.0.1.jar &

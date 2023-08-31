@@ -1,20 +1,17 @@
 pipeline {
     agent any
-    // agent {
-    //     docker {
-    //         image 'abdl00/gradle-custom-image'
-    //     }
-    // }
+    agent {
+        docker {
+            image 'abdl00/gradle-custom-image'
+        }
+    }
     triggers {
         pollSCM('*/2 * * * *')
     }
     stages {
         stage('Build') {
             steps {
-                sh 'ls'
-                sh 'java --version'
-                sh 'chmod +x ./gradlew'
-                sh './gradlew clean build -x test'
+                sh 'gradle clean build -x test'
             }
         }
         stage('Test') {

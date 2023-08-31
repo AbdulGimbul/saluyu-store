@@ -36,12 +36,19 @@ pipeline {
                     def deployPath = 'jenkins/scripts/deploy.sh'
                     def deployScript = 'deploy.sh'
                     def ec2PublicIp = '3.1.203.88'
+                    def appOutput = ''
 
                     sshagent(credentials: ['jenkins-to-aws']) {
                         sh "scp -o StrictHostKeyChecking=no -i ./jenkins/scripts/abdl_aws_key.pem ${jarPath} ${deployPath} app@${ec2PublicIp}:${remoteDir}/"
-                        sh "ssh -o StrictHostKeyChecking=no -i ./jenkins/scripts/abdl_aws_key.pem app@${ec2PublicIp} 'bash ${remoteDir}/${deployScript}'"
+                        appOutput = sh(script: "ssh -o StrictHostKeyChecking=no -i ./jenkins/scripts/abdl_aws_key.pem app@${ec2PublicIp} 'bash ${remoteDir}/${deployScript}'", returnStdout: true).trim()
                     }
-                    sleep 60
+
+                    if (appOutput.contains("Tomcat started on port(s): 8080") &&
+                        appOutput.contains("Started SaluyustoreApplicationKt")) {
+                        
+                        currentBuild.result = 'SUCCESS'  // Mark build as successful
+                        error("Application started successfully. Stopping the Jenkins job.")
+                    }
                 }
             }
         }

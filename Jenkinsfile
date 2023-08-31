@@ -32,7 +32,7 @@ pipeline {
             steps {
                 script {
                     def remoteDir = 'app'
-                    def jarPath = 'target/*.jar'
+                    def jarPath = 'build/libs/*.jar'
                     def deployPath = 'jenkins/scripts/deploy.sh'
                     def deployScript = 'deploy.sh'
                     def ec2PublicIp = '3.1.203.88'

@@ -4,26 +4,25 @@ import jakarta.persistence.*
 import java.util.*
 
 @Entity
-@Table(name = "masterUsers")
+@Table(name = "master_user")
 data class MasterUsers(
     @Id
-    val userId: String,
-    @Column(name = "userName")
-    var userName: String,
-    @Column(name = "email")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "user_id")
+    val userId: Long? = null,
+    var username: String,
     var email: String,
-    @Column(name = "password")
     var password: String,
-    @Column(name = "userActive")
+    @Column(name = "user_active")
     var userActive: Boolean? = true,
-    @Column(name = "userRole")
+    @Column(name = "user_role")
     var userRole: Int = 2,
-    @Column(name = "createdDate")
+    @Column(name = "created_at")
     val createdAt: Date,
-    @Column(name = "createdBy")
+    @Column(name = "created_by")
     val createdBy: String,
-    @Column(name = "modifyDate")
+    @Column(name = "modify_date")
     var modifyDate: Date,
-    @Column(name = "modifyBy")
+    @Column(name = "modify_by")
     var modifyBy: String
 )

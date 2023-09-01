@@ -6,7 +6,9 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -46,10 +48,21 @@ class BasicAuthSecurityConfig(
         return http.build()
     }
 
+    @Bean
+    fun webSecuritySwagger(): WebSecurityCustomizer{
+        return WebSecurityCustomizer { web: WebSecurity ->
+            web.debug(securityDebug)
+                .ignoring()
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "swagger-ui**", "/v3/api-docs/**", "/v3/api-docs**")
+        }
+    }
+
     companion object {
         //    private final TokenWhitelist tokenWhitelist;
         val PATH_ARRAY = arrayOf(
             "/api/users/**"
         )
+        const val securityDebug = false // Set your desired value for securityDebug
+
     }
 }

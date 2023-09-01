@@ -27,7 +27,7 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
     }
 
     @GetMapping("/{userId}")
-    fun getUser(@PathVariable("userId") userId: String): ResponseEntity<*> {
+    fun getUser(@PathVariable("userId") userId: Long): ResponseEntity<*> {
         return try {
             val userResponse = masterUsersService.get(userId)
 
@@ -38,7 +38,7 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
     }
 
     @PutMapping("/{userId}")
-    fun updateUser(@PathVariable("userId") userId: String,
+    fun updateUser(@PathVariable("userId") userId: Long,
                    @RequestBody updateUserRequest: UpdateUserRequest): ResponseEntity<*> {
         return try {
             val userResponse = masterUsersService.update(userId, updateUserRequest)
@@ -50,7 +50,7 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
     }
 
     @DeleteMapping("/{userId}")
-    fun deleteUser(@PathVariable("userId") userId: String): ResponseEntity<*> {
+    fun deleteUser(@PathVariable("userId") userId: Long): ResponseEntity<*> {
         return try {
             masterUsersService.delete(userId)
 

@@ -8,7 +8,7 @@ import com.project.saluyustore.model.request.UpdateUserRequest
 import com.project.saluyustore.model.response.JwtTokenResponse
 import com.project.saluyustore.model.response.UserLoginResponse
 import com.project.saluyustore.model.response.UserResponse
-import com.project.saluyustore.repository.UserRepository
+import com.project.saluyustore.repository.MasterUserRepository
 import com.project.saluyustore.util.JwtTokenUtil
 import com.project.saluyustore.util.NotFoundException
 import com.project.saluyustore.util.ValidationUtil
@@ -24,7 +24,7 @@ import java.util.stream.Collectors
 
 @Service
 class MasterUsersServiceImpl(
-    val userRepository: UserRepository,
+    val masterUserRepository: MasterUserRepository,
     val validationUtil: ValidationUtil,
     val authManager: AuthenticationManager,
     val jwtTokenUtil: JwtTokenUtil
@@ -36,50 +36,49 @@ class MasterUsersServiceImpl(
         val passwd = BCryptPasswordEncoder().encode(createUserRequest.password)
 
         val masterUsers = MasterUsers(
-            userId = userRepository.getSeqUserId(),
-            userName = createUserRequest.userName!!,
-            email = createUserRequest.email!!,
+            username = createUserRequest.username,
+            email = createUserRequest.email,
             password = passwd,
             createdAt = Date(),
-            createdBy = createUserRequest.userName,
+            createdBy = createUserRequest.username,
             modifyDate = Date(),
-            modifyBy = createUserRequest.userName,
+            modifyBy = createUserRequest.username,
         )
 
-        userRepository.save(masterUsers)
+        masterUserRepository.save(masterUsers)
 
         return convertUserToUserResponse(masterUsers)
     }
 
-    override fun get(userId: String): UserResponse {
+    override fun get(userId: Long): UserResponse {
         val user = findByIdOrThrowNotFound(userId)
         return convertUserToUserResponse(user)
     }
 
-    override fun update(userId: String, updateUserRequest: UpdateUserRequest): UserResponse {
+    override fun update(userId: Long, updateUserRequest: UpdateUserRequest): UserResponse {
         val user = findByIdOrThrowNotFound(userId)
         validationUtil.validate(updateUserRequest)
 
         user.apply {
-            userName = updateUserRequest.userName!!
-            email = updateUserRequest.email!!
-            password = updateUserRequest.password!!
+            username = updateUserRequest.userName
+            email = updateUserRequest.email
+            password = updateUserRequest.password
             modifyDate = Date()
             modifyBy = ""
         }
 
-        userRepository.save(user)
+        masterUserRepository.save(user)
 
         return convertUserToUserResponse(user)
     }
 
-    override fun delete(userId: String) {
+    override fun delete(userId: Long) {
         val user = findByIdOrThrowNotFound(userId)
-        userRepository.delete(user)
+        masterUserRepository.delete(user)
     }
 
     override fun list(listUserRequest: ListUserRequest): List<UserResponse> {
-        val page = userRepository.findAll(PageRequest.of(listUserRequest.page, listUserRequest.size))
+        val page = masterUserRepository.findAll(PageRequest.of(listUserRequest.page, listUserRequest.size))
         val masterUsers: List<MasterUsers> = page.get().collect(Collectors.toList())
         return masterUsers.map { convertUserToUserResponse(it) }
     }
@@ -87,18 +86,18 @@ class MasterUsersServiceImpl(
     override fun login(loginUserRequest: LoginUserRequest, httpServletRequest: HttpServletRequest): UserLoginResponse {
 
         authManager.authenticate(UsernamePasswordAuthenticationToken(loginUserRequest.username, loginUserRequest.password))
-        val userByUsername = userRepository.findByUserName(loginUserRequest.username)
+        val userByUsername = masterUserRepository.findByUsername(loginUserRequest.username)
 
         val jwtTokenResponse = JwtTokenResponse(
             userId = userByUsername.userId,
-            username = userByUsername.userName,
+            username = userByUsername.username,
             email = userByUsername.email,
             role = userByUsername.userRole
         )
 
         val userLoginResponse = UserLoginResponse(
             userId = userByUsername.userId,
-            username = userByUsername.userName,
+            username = userByUsername.username,
             email = userByUsername.email,
             roleId = userByUsername.userRole,
             userToken = jwtTokenUtil.generateToken(jwtTokenResponse, httpServletRequest)
@@ -107,8 +106,8 @@ class MasterUsersServiceImpl(
         return userLoginResponse
     }
 
-    private fun findByIdOrThrowNotFound(userId: String): MasterUsers {
-        val user = userRepository.findByIdOrNull(userId)
+    private fun findByIdOrThrowNotFound(userId: Long): MasterUsers {
+        val user = masterUserRepository.findByIdOrNull(userId)
         if (user == null){
             throw NotFoundException()
         } else {
@@ -119,13 +118,13 @@ class MasterUsersServiceImpl(
     private fun convertUserToUserResponse(masterUsers: MasterUsers): UserResponse{
         return UserResponse(
             userId = masterUsers.userId,
-            userName = masterUsers.userName,
+            userName = masterUsers.username,
             email = masterUsers.email,
             password = masterUsers.password,
             userActive = masterUsers.userActive!!,
             userRole = masterUsers.userRole!!,
             createdAt = masterUsers.createdAt,
-            createdBy = masterUsers.userName,
+            createdBy = masterUsers.username,
             modifyDate = masterUsers.modifyDate,
             modifyBy = ""
         )

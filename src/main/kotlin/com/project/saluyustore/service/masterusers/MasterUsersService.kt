@@ -12,11 +12,11 @@ interface MasterUsersService {
 
     fun create(createUserRequest: CreateUserRequest): UserResponse
 
-    fun get(userId: String): UserResponse
+    fun get(userId: Long): UserResponse
 
-    fun update(userId: String, updateUserRequest: UpdateUserRequest): UserResponse
+    fun update(userId: Long, updateUserRequest: UpdateUserRequest): UserResponse
 
-    fun delete(userId: String)
+    fun delete(userId: Long)
 
     fun list(listUserRequest: ListUserRequest): List<UserResponse>
 

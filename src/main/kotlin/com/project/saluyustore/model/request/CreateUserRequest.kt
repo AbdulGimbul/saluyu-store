@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotNull
 
 data class CreateUserRequest(
     @field:NotBlank
-    val userName: String?,
+    val username: String = "",
     @field:NotBlank
-    val email: String?,
+    val email: String = "",
     @field:NotBlank
     val password: String?,
     val userActive: Boolean?,

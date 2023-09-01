@@ -4,7 +4,7 @@ import java.util.*
 
 data class UserResponse(
 
-    val userId: String,
+    val userId: Long?,
     val userName: String,
     val email: String,
     val password: String,

@@ -6,8 +6,8 @@ import jakarta.persistence.Table
 import java.sql.Date
 
 @Entity
-@Table(name = "masterItems")
-data class MasterItems(
+@Table(name = "master_product")
+data class MasterProducts(
         @field:Id
         var itemId: String? = null,
         var itemName: String? = null,

@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UserRepository : JpaRepository<MasterUsers, String> {
-    @Query(value = "select func_gen_seq_user_id()", nativeQuery = true)
-    fun getSeqUserId(): String
+interface MasterUserRepository : JpaRepository<MasterUsers, Long> {
+//    @Query(value = "select func_gen_seq_user_id()", nativeQuery = true)
+//    fun getSeqUserId(): String
 
-    fun findByUserName(username: String): MasterUsers
+    fun findByUsername(username: String): MasterUsers
 }

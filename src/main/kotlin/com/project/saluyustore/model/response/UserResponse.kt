@@ -7,7 +7,6 @@ data class UserResponse(
     val userId: Long?,
     val userName: String,
     val email: String,
-    val password: String,
     val userActive: Boolean,
     val userRole: Int,
     val createdAt: Date,

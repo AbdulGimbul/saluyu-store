@@ -14,7 +14,7 @@ data class MasterUsers(
     var email: String,
     var password: String,
     @Column(name = "user_active")
-    var userActive: Boolean? = true,
+    var userActive: Boolean = true,
     @Column(name = "user_role")
     var userRole: Int = 2,
     @Column(name = "created_at")

@@ -1,8 +1,10 @@
 package com.project.saluyustore.model.request
 
+import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.persistence.Column
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import org.springframework.boot.context.properties.bind.DefaultValue
 
 data class CreateUserRequest(
     @field:NotBlank
@@ -12,5 +14,6 @@ data class CreateUserRequest(
     @field:NotBlank
     val password: String?,
     val userActive: Boolean?,
-    val userRole: Int?,
+    @field:Schema(example = "3")
+    val userRole: Int = 3,
 )

@@ -33,11 +33,10 @@ class MasterUsersServiceImpl(
     val jwtTokenUtil: JwtTokenUtil
 ): MasterUsersService {
 
-    @Transactional
     override fun create(createUserRequest: CreateUserRequest): UserResponse {
         validationUtil.validate(createUserRequest)
-        if (masterUserRepository.findByUsername(createUserRequest.username).userId != null) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already registered")
+        if (!masterUserRepository.findFirstByUsername(createUserRequest.username).isEmpty) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Username or email already registered")
         }
 
         val passwd = BCryptPasswordEncoder().encode(createUserRequest.password)

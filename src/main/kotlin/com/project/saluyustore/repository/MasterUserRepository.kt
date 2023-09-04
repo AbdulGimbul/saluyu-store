@@ -4,6 +4,7 @@ import com.project.saluyustore.entity.MasterUsers
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
+import java.util.Optional
 
 @Repository
 interface MasterUserRepository : JpaRepository<MasterUsers, Long> {
@@ -11,4 +12,5 @@ interface MasterUserRepository : JpaRepository<MasterUsers, Long> {
 //    fun getSeqUserId(): String
 
     fun findByUsername(username: String): MasterUsers
+    fun findFirstByUsername(username: String): Optional<MasterUsers>
 }

@@ -15,10 +15,13 @@ import com.project.saluyustore.util.ValidationUtil
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.server.ResponseStatusException
 import java.util.Date
 import java.util.stream.Collectors
 
@@ -30,8 +33,12 @@ class MasterUsersServiceImpl(
     val jwtTokenUtil: JwtTokenUtil
 ): MasterUsersService {
 
+    @Transactional
     override fun create(createUserRequest: CreateUserRequest): UserResponse {
         validationUtil.validate(createUserRequest)
+        if (masterUserRepository.findByUsername(createUserRequest.username).userId != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already registered")
+        }
 
         val passwd = BCryptPasswordEncoder().encode(createUserRequest.password)
 

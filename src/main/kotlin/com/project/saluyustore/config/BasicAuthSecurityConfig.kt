@@ -57,27 +57,16 @@ class BasicAuthSecurityConfig(
         return http.build()
     }
 
-    @Bean
-    fun webSecuritySwagger(): WebSecurityCustomizer {
-        return WebSecurityCustomizer { web: WebSecurity ->
-            web.debug(securityDebug)
-                .ignoring()
-                .requestMatchers(
-                    "/swagger-ui.html",
-                    "/swagger-ui/**",
-                    "swagger-ui**",
-                    "/v3/api-docs/**",
-                    "/v3/api-docs**"
-                )
-        }
-    }
 
     companion object {
         //    private final TokenWhitelist tokenWhitelist;
         val PATH_ARRAY = arrayOf(
-            "/api/auth/**"
+            "/api/auth/**",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/v3/api-docs"
         )
-        const val securityDebug = false // Set your desired value for securityDebug
 
     }
 }

@@ -10,10 +10,12 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.authentication.logout.LogoutHandler
 
 @Configuration
 @EnableWebSecurity
@@ -21,7 +23,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class BasicAuthSecurityConfig(
     private val userDetailsService: CustomUserDetailsService,
     private val unauthorizedHandler: JwtAuthEntryPoint,
-    private val authenticationJwtTokenFilter: JwtAuthFilter
+    private val authenticationJwtTokenFilter: JwtAuthFilter,
+    private val logoutHandler: LogoutHandler
 ) {
 
     @Bean
@@ -38,29 +41,41 @@ class BasicAuthSecurityConfig(
     @Bean
     @Throws(Exception::class)
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http.cors().and().csrf().disable()
-            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
-            .requestMatchers(*PATH_ARRAY).permitAll()
-            .anyRequest().authenticated()
+        http.cors { it.disable() }.csrf { it.disable() }
+            .exceptionHandling { it.authenticationEntryPoint(unauthorizedHandler) }
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .authorizeHttpRequests { it.requestMatchers(*PATH_ARRAY).permitAll().anyRequest().authenticated() }
         http.addFilterBefore(authenticationJwtTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
         http.userDetailsService(userDetailsService)
+        http.logout {
+            it.logoutUrl("/api/auth/logout")
+                .addLogoutHandler(logoutHandler)
+                .logoutSuccessHandler { request, response, authentication ->
+                    SecurityContextHolder.clearContext()
+                }
+        }
         return http.build()
     }
 
     @Bean
-    fun webSecuritySwagger(): WebSecurityCustomizer{
+    fun webSecuritySwagger(): WebSecurityCustomizer {
         return WebSecurityCustomizer { web: WebSecurity ->
             web.debug(securityDebug)
                 .ignoring()
-                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "swagger-ui**", "/v3/api-docs/**", "/v3/api-docs**")
+                .requestMatchers(
+                    "/swagger-ui.html",
+                    "/swagger-ui/**",
+                    "swagger-ui**",
+                    "/v3/api-docs/**",
+                    "/v3/api-docs**"
+                )
         }
     }
 
     companion object {
         //    private final TokenWhitelist tokenWhitelist;
         val PATH_ARRAY = arrayOf(
-            "/api/users/**"
+            "/api/auth/**"
         )
         const val securityDebug = false // Set your desired value for securityDebug
 

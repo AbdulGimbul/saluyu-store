@@ -13,4 +13,5 @@ interface MasterUserRepository : JpaRepository<MasterUsers, Long> {
 
     fun findByUsername(username: String): MasterUsers
     fun findFirstByUsername(username: String): Optional<MasterUsers>
+    fun findFirstByToken(token: String): Optional<MasterUsers>
 }

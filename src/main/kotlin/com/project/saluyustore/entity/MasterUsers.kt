@@ -24,5 +24,9 @@ data class MasterUsers(
     @Column(name = "modify_date")
     var modifyDate: Date,
     @Column(name = "modify_by")
-    var modifyBy: String
+    var modifyBy: String,
+    @Column(name = "token")
+    var token: String? = null,
+    @Column(name = "token_expired_at")
+    var tokenExpiredAt: Long? = null
 )

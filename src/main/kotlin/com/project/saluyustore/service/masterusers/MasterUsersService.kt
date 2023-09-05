@@ -1,5 +1,6 @@
 package com.project.saluyustore.service.masterusers
 
+import com.project.saluyustore.entity.MasterUsers
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.ListUserRequest
 import com.project.saluyustore.model.request.LoginUserRequest
@@ -19,6 +20,4 @@ interface MasterUsersService {
     fun delete(userId: Long)
 
     fun list(listUserRequest: ListUserRequest): List<UserResponse>
-
-    fun login(loginUserRequest: LoginUserRequest, httpServletRequest: HttpServletRequest): UserLoginResponse
 }

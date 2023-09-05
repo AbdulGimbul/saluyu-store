@@ -28,9 +28,7 @@ import java.util.stream.Collectors
 @Service
 class MasterUsersServiceImpl(
     val masterUserRepository: MasterUserRepository,
-    val validationUtil: ValidationUtil,
-    val authManager: AuthenticationManager,
-    val jwtTokenUtil: JwtTokenUtil
+    val validationUtil: ValidationUtil
 ): MasterUsersService {
 
     override fun create(createUserRequest: CreateUserRequest): UserResponse {
@@ -87,29 +85,6 @@ class MasterUsersServiceImpl(
         val page = masterUserRepository.findAll(PageRequest.of(listUserRequest.page, listUserRequest.size))
         val masterUsers: List<MasterUsers> = page.get().collect(Collectors.toList())
         return masterUsers.map { convertUserToUserResponse(it) }
-    }
-
-    override fun login(loginUserRequest: LoginUserRequest, httpServletRequest: HttpServletRequest): UserLoginResponse {
-
-        authManager.authenticate(UsernamePasswordAuthenticationToken(loginUserRequest.username, loginUserRequest.password))
-        val userByUsername = masterUserRepository.findByUsername(loginUserRequest.username)
-
-        val jwtTokenResponse = JwtTokenResponse(
-            userId = userByUsername.userId,
-            username = userByUsername.username,
-            email = userByUsername.email,
-            role = userByUsername.userRole
-        )
-
-        val userLoginResponse = UserLoginResponse(
-            userId = userByUsername.userId,
-            username = userByUsername.username,
-            email = userByUsername.email,
-            roleId = userByUsername.userRole,
-            userToken = jwtTokenUtil.generateToken(jwtTokenResponse, httpServletRequest)
-        )
-
-        return userLoginResponse
     }
 
     private fun findByIdOrThrowNotFound(userId: Long): MasterUsers {

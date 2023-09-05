@@ -1,6 +1,7 @@
 package com.project.saluyustore.config
 
 import com.project.saluyustore.model.response.JwtTokenResponse
+import com.project.saluyustore.repository.MasterUserRepository
 import com.project.saluyustore.util.JwtTokenUtil
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.SignatureException
@@ -17,7 +18,11 @@ import org.springframework.web.filter.OncePerRequestFilter
 import java.io.IOException
 
 @Component
-class JwtAuthFilter(private val jwtTokenUtil: JwtTokenUtil, private val userDetailsService: UserDetailsService) :
+class JwtAuthFilter(
+    private val jwtTokenUtil: JwtTokenUtil,
+    private val userDetailsService: UserDetailsService,
+    private val masterUserRepository: MasterUserRepository
+) :
     OncePerRequestFilter() {
     @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(
@@ -27,7 +32,7 @@ class JwtAuthFilter(private val jwtTokenUtil: JwtTokenUtil, private val userDeta
     ) {
         val header = request.getHeader("Authorization")
         var username: String? = null
-        var token: String? = null
+        var token = ""
         var jwtTokenDto: JwtTokenResponse? = JwtTokenResponse()
         if (header != null && header.startsWith("Bearer ")) {
             token = header.replace("Bearer ", "")
@@ -46,12 +51,15 @@ class JwtAuthFilter(private val jwtTokenUtil: JwtTokenUtil, private val userDeta
         }
         if (username != null && SecurityContextHolder.getContext().authentication == null) {
             val userDetails = userDetailsService.loadUserByUsername(username)
-            if (jwtTokenUtil.validationToken(token, userDetails)) {
-                val authenticationToken =
-                    UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
-                authenticationToken.details = WebAuthenticationDetailsSource().buildDetails(request)
-                SecurityContextHolder.getContext().authentication = authenticationToken
-            }
+            val isTokenValid = masterUserRepository.findFirstByToken(token)
+                .map { it.token == token }
+                .orElse(false)
+                if (jwtTokenUtil.validationToken(token, userDetails) && isTokenValid) {
+                    val authenticationToken =
+                        UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+                    authenticationToken.details = WebAuthenticationDetailsSource().buildDetails(request)
+                    SecurityContextHolder.getContext().authentication = authenticationToken
+                }
         }
         request.setAttribute("User-Data", jwtTokenDto)
         filterChain.doFilter(request, response)

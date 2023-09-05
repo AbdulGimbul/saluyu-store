@@ -15,7 +15,6 @@ class CustomUserDetailsService(private val masterUserRepository: MasterUserRepos
     override fun loadUserByUsername(username: String): UserDetails {
         return try {
             val userData: MasterUsers = masterUserRepository.findByUsername(username)
-//            val (_, userName, _, password) = userRepository.findByUserName(username)
             User(userData.username, userData.password, ArrayList())
         } catch (e: Exception) {
             User("", "", ArrayList())

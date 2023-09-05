@@ -1,5 +1,6 @@
 package com.project.saluyustore.controller
 
+import com.project.saluyustore.entity.MasterUsers
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.ListUserRequest
 import com.project.saluyustore.model.request.LoginUserRequest
@@ -8,6 +9,7 @@ import com.project.saluyustore.service.masterusers.MasterUsersService
 import com.project.saluyustore.util.HttpResponse
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -60,7 +62,7 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
         }
     }
 
-    @GetMapping
+    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     fun listUsers(@RequestParam(value = "size", defaultValue = "10") size: Int,
                   @RequestParam(value = "page", defaultValue = "0") page: Int): ResponseEntity<*> {
         return try {
@@ -69,20 +71,6 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
 
             HttpResponse.setResp(responses, "Success", HttpStatus.OK)
         } catch (e: Exception) {
-            HttpResponse.setResp(null, e.message, HttpStatus.BAD_REQUEST)
-        }
-    }
-
-    @PostMapping("/login")
-    fun loginUser(
-        @RequestBody loginUserRequest: LoginUserRequest,
-        httpServletRequest: HttpServletRequest
-    ): ResponseEntity<*>{
-        return try {
-            val loginResponse = masterUsersService.login(loginUserRequest, httpServletRequest)
-
-            HttpResponse.setResp(loginResponse, "Login Success",HttpStatus.OK)
-        } catch (e: Exception){
             HttpResponse.setResp(null, e.message, HttpStatus.BAD_REQUEST)
         }
     }

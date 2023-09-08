@@ -21,11 +21,10 @@ data class MasterUsers(
     val createdAt: Date,
     @Column(name = "created_by")
     val createdBy: String,
-    @Column(name = "modify_date")
-    var modifyDate: Date,
-    @Column(name = "modify_by")
-    var modifyBy: String,
-    @Column(name = "token")
+    @Column(name = "modified_at")
+    var modifiedAt: Date,
+    @Column(name = "modified_by")
+    var modifiedBy: String,
     var token: String? = null,
     @Column(name = "token_expired_at")
     var tokenExpiredAt: Long? = null

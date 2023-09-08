@@ -6,6 +6,9 @@ import jakarta.persistence.*
 @Table(name = "master_category")
 data class MasterCategories(
         @field:Id
-        var categoryId: Int? = null,
+        @field:GeneratedValue(strategy = GenerationType.SEQUENCE)
+        @field:Column(name = "category_id")
+        var categoryId: Long? = null,
+        @field:Column(name = "category_desc")
         var categoryDesc: String? = null
 )

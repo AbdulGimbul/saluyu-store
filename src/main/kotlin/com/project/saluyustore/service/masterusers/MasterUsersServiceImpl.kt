@@ -45,8 +45,8 @@ class MasterUsersServiceImpl(
             password = passwd,
             createdAt = Date(),
             createdBy = createUserRequest.username,
-            modifyDate = Date(),
-            modifyBy = createUserRequest.username,
+            modifiedAt = Date(),
+            modifiedBy = createUserRequest.username,
         )
 
         masterUserRepository.save(masterUsers)
@@ -67,8 +67,8 @@ class MasterUsersServiceImpl(
             username = updateUserRequest.userName
             email = updateUserRequest.email
             password = updateUserRequest.password
-            modifyDate = Date()
-            modifyBy = ""
+            modifiedAt = Date()
+            modifiedBy = ""
         }
 
         masterUserRepository.save(user)
@@ -105,7 +105,7 @@ class MasterUsersServiceImpl(
             userRole = masterUsers.userRole,
             createdAt = masterUsers.createdAt,
             createdBy = masterUsers.username,
-            modifyDate = masterUsers.modifyDate,
+            modifyDate = masterUsers.modifiedAt,
             modifyBy = ""
         )
     }

@@ -27,7 +27,6 @@ class MasterCategoryServiceImp(val masterCategoryRepository: MasterCategoryRepos
     override fun addCategory(categoryRequest: CategoryRequest): ResponseEntity<*> {
         return try {
             val masterCategories = MasterCategories()
-            masterCategories.categoryId = masterCategoryRepository.getSeqCategoryId()
             masterCategories.categoryDesc = categoryRequest.categoryDesc
             val saveCategory = masterCategoryRepository.save(masterCategories)
             HttpResponse.setResp(saveCategory, "Success", HttpStatus.OK)

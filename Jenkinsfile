@@ -23,7 +23,7 @@ pipeline {
             steps {
                 script {
                     def remoteDir = 'app'
-                    def jarPath = 'build/libs/saluyustore-0.0.1.jar.jar'
+                    def jarPath = 'build/libs/saluyustore-0.0.1.jar'
                     def deployPath = 'jenkins/scripts/deploy.sh'
                     def deployScript = 'deploy.sh'
                     def ec2PublicIp = '13.213.43.63'

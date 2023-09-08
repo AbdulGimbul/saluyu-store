@@ -57,7 +57,7 @@ class AuthServiceImpl(
         masterUserRepository.save(user)
     }
 
-    private fun next7Days(): Long{
+    private fun next7Days(): Long {
         return System.currentTimeMillis() + (1000 * 16 * 24 * 7)
     }
 

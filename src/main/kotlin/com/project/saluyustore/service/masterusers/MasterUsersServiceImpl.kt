@@ -64,7 +64,7 @@ class MasterUsersServiceImpl(
         validationUtil.validate(updateUserRequest)
 
         user.apply {
-            username = updateUserRequest.userName
+            username = updateUserRequest.username
             email = updateUserRequest.email
             password = updateUserRequest.password
             modifiedAt = Date()
@@ -99,14 +99,14 @@ class MasterUsersServiceImpl(
     private fun convertUserToUserResponse(masterUsers: MasterUsers): UserResponse{
         return UserResponse(
             userId = masterUsers.userId,
-            userName = masterUsers.username,
+            username = masterUsers.username,
             email = masterUsers.email,
             userActive = masterUsers.userActive,
             userRole = masterUsers.userRole,
             createdAt = masterUsers.createdAt,
             createdBy = masterUsers.username,
-            modifyDate = masterUsers.modifiedAt,
-            modifyBy = ""
+            modifiedAt = masterUsers.modifiedAt,
+            modifiedBy = ""
         )
     }
 }

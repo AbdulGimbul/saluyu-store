@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull
 data class UpdateUserRequest(
 
     @field:NotBlank
-    val userName: String = "",
+    val username: String = "",
 
     @field:NotBlank
     val email: String = "",

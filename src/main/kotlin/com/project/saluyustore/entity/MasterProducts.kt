@@ -20,8 +20,8 @@ data class MasterProducts(
         var itemStock: Int? = null,
         @field:Column(name = "picture_item")
         var pictureItem: String? = null,
-        @field:Column(name = "updated_date")
-        var updatedDate: Date? = null,
+        @field:Column(name = "updated_at")
+        var updatedAt: Date? = null,
         @field:Column(name = "user_id")
         var userId: String? = null
 )

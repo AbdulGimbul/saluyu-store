@@ -34,6 +34,7 @@ class MasterUsersServiceImpl(
         val masterUsers = MasterUsers(
             username = createUserRequest.username,
             email = createUserRequest.email,
+            userRole = createUserRequest.userRole,
             password = passwd,
             createdAt = Date(),
             createdBy = createUserRequest.username,

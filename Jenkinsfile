@@ -29,7 +29,7 @@ pipeline {
                     def ec2PublicIp = '13.213.43.63'
 
                     sshagent(credentials: ['jenkins-to-aws']) {
-                        sh "ssh chmod 400 ./jenkins/scripts/abdl_aws_key.pem"
+                        sh "chmod 400 ./jenkins/scripts/abdl_aws_key.pem"
                         sh "scp -o StrictHostKeyChecking=no -i ./jenkins/scripts/abdl_aws_key.pem ${jarPath} ${deployPath} app@${ec2PublicIp}:${remoteDir}/"
                         sh "ssh -o StrictHostKeyChecking=no -i ./jenkins/scripts/abdl_aws_key.pem app@${ec2PublicIp} 'nohup bash ${remoteDir}/${deployScript} > /dev/null 2>&1 &'"
                     }

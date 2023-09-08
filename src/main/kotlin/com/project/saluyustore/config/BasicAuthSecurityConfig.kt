@@ -57,11 +57,11 @@ class BasicAuthSecurityConfig(
         return http.build()
     }
 
-
     companion object {
         //    private final TokenWhitelist tokenWhitelist;
         val PATH_ARRAY = arrayOf(
             "/api/auth/**",
+            "/api/users",
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**",

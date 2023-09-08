@@ -7,7 +7,8 @@ import java.util.*
 @Table(name = "master_user")
 data class MasterUsers(
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "project_seq")
+    @SequenceGenerator(name = "project_sql", sequenceName = "master_user_SEQ", allocationSize = 1)
     @Column(name = "user_id")
     val userId: Long? = null,
     var username: String,

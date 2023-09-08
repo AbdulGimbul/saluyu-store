@@ -5,10 +5,10 @@ import java.util.*
 
 @Entity
 @Table(name = "master_user")
+@SequenceGenerator(name = "sequence", sequenceName = "saluyu_seq_custom")
 data class MasterUsers(
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "project_sql")
-    @SequenceGenerator(name = "project_sql", sequenceName = "master_user_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence")
     @Column(name = "user_id")
     val userId: Long? = null,
     var username: String,

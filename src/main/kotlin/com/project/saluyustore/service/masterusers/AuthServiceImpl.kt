@@ -7,7 +7,6 @@ import com.project.saluyustore.model.response.UserLoginResponse
 import com.project.saluyustore.repository.MasterUserRepository
 import com.project.saluyustore.util.JwtTokenUtil
 import com.project.saluyustore.util.NotFoundException
-import com.project.saluyustore.util.ValidationUtil
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.AuthenticationManager
@@ -23,7 +22,12 @@ class AuthServiceImpl(
 
     override fun login(loginUserRequest: LoginUserRequest, httpServletRequest: HttpServletRequest): UserLoginResponse {
 
-        authManager.authenticate(UsernamePasswordAuthenticationToken(loginUserRequest.username, loginUserRequest.password))
+        authManager.authenticate(
+            UsernamePasswordAuthenticationToken(
+                loginUserRequest.username,
+                loginUserRequest.password
+            )
+        )
         val userByUsername = masterUserRepository.findByUsername(loginUserRequest.username)
 
         val jwtTokenResponse = JwtTokenResponse(
@@ -63,7 +67,7 @@ class AuthServiceImpl(
 
     private fun findByIdOrThrowNotFound(userId: Long): MasterUsers {
         val user = masterUserRepository.findByIdOrNull(userId)
-        if (user == null){
+        if (user == null) {
             throw NotFoundException()
         } else {
             return user

@@ -54,12 +54,12 @@ class JwtAuthFilter(
             val isTokenValid = masterUserRepository.findFirstByToken(token)
                 .map { it.token == token }
                 .orElse(false)
-                if (jwtTokenUtil.validationToken(token, userDetails) && isTokenValid) {
-                    val authenticationToken =
-                        UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
-                    authenticationToken.details = WebAuthenticationDetailsSource().buildDetails(request)
-                    SecurityContextHolder.getContext().authentication = authenticationToken
-                }
+            if (jwtTokenUtil.validationToken(token, userDetails) && isTokenValid) {
+                val authenticationToken =
+                    UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+                authenticationToken.details = WebAuthenticationDetailsSource().buildDetails(request)
+                SecurityContextHolder.getContext().authentication = authenticationToken
+            }
         }
         request.setAttribute("User-Data", jwtTokenDto)
         filterChain.doFilter(request, response)

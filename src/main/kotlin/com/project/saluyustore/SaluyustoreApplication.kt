@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class SaluyustoreApplication
 
 fun main(args: Array<String>) {
-	runApplication<SaluyustoreApplication>(*args)
+    runApplication<SaluyustoreApplication>(*args)
 }

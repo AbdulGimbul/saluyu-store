@@ -1,16 +1,12 @@
 package com.project.saluyustore.controller
 
-import com.project.saluyustore.entity.MasterUsers
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.ListUserRequest
-import com.project.saluyustore.model.request.LoginUserRequest
 import com.project.saluyustore.model.request.UpdateUserRequest
 import com.project.saluyustore.service.masterusers.MasterUsersService
 import com.project.saluyustore.util.HttpResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import io.swagger.v3.oas.models.responses.ApiResponse
-import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity

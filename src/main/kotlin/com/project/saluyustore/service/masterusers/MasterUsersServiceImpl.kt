@@ -3,33 +3,25 @@ package com.project.saluyustore.service.masterusers
 import com.project.saluyustore.entity.MasterUsers
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.ListUserRequest
-import com.project.saluyustore.model.request.LoginUserRequest
 import com.project.saluyustore.model.request.UpdateUserRequest
-import com.project.saluyustore.model.response.JwtTokenResponse
-import com.project.saluyustore.model.response.UserLoginResponse
 import com.project.saluyustore.model.response.UserResponse
 import com.project.saluyustore.repository.MasterUserRepository
-import com.project.saluyustore.util.JwtTokenUtil
 import com.project.saluyustore.util.NotFoundException
 import com.project.saluyustore.util.ValidationUtil
-import jakarta.servlet.http.HttpServletRequest
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
-import java.util.Date
+import java.util.*
 import java.util.stream.Collectors
 
 @Service
 class MasterUsersServiceImpl(
     val masterUserRepository: MasterUserRepository,
     val validationUtil: ValidationUtil
-): MasterUsersService {
+) : MasterUsersService {
 
     override fun create(createUserRequest: CreateUserRequest): UserResponse {
         validationUtil.validate(createUserRequest)
@@ -89,14 +81,14 @@ class MasterUsersServiceImpl(
 
     private fun findByIdOrThrowNotFound(userId: Long): MasterUsers {
         val user = masterUserRepository.findByIdOrNull(userId)
-        if (user == null){
+        if (user == null) {
             throw NotFoundException()
         } else {
             return user
         }
     }
 
-    private fun convertUserToUserResponse(masterUsers: MasterUsers): UserResponse{
+    private fun convertUserToUserResponse(masterUsers: MasterUsers): UserResponse {
         return UserResponse(
             userId = masterUsers.userId,
             username = masterUsers.username,

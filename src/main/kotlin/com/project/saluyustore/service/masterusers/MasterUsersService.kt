@@ -1,13 +1,9 @@
 package com.project.saluyustore.service.masterusers
 
-import com.project.saluyustore.entity.MasterUsers
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.ListUserRequest
-import com.project.saluyustore.model.request.LoginUserRequest
 import com.project.saluyustore.model.request.UpdateUserRequest
-import com.project.saluyustore.model.response.UserLoginResponse
 import com.project.saluyustore.model.response.UserResponse
-import jakarta.servlet.http.HttpServletRequest
 
 interface MasterUsersService {
 

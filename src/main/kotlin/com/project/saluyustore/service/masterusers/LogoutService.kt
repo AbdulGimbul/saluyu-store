@@ -14,16 +14,17 @@ class LogoutService(
 
     override fun logout(request: HttpServletRequest?, response: HttpServletResponse?, authentication: Authentication?) {
         val header = request?.getHeader("Authorization")
-        var token: String? = null
-        if (header != null && header.startsWith("Bearer ")) {
-            token = header.replace("Bearer ", "")
-            val storedToken = masterUserRepository.findFirstByToken(token)
-                .orElse(null)
-            if (storedToken != null) {
-                storedToken.tokenExpiredAt = null
-                storedToken.token = null
-                masterUserRepository.save(storedToken)
-            }
+        var token = ""
+        if (header == null || !header.startsWith("Bearer ")) {
+            return
+        }
+        token = header.substring(7)
+        val storedToken = masterUserRepository.findFirstByToken(token)
+            .orElse(null)
+        if (storedToken != null){
+            storedToken.tokenExpiredAt = null
+            storedToken.token = null
+            masterUserRepository.save(storedToken)
         }
 
     }

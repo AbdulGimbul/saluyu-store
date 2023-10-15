@@ -19,7 +19,7 @@ class MasterItemsServiceImp(private val masterItemsRepository: MasterItemsReposi
             }
             HttpResponse.setResp(items, "Success", items.size, HttpStatus.OK)
         } catch (e: Exception) {
-            HttpResponse.setResp(null, e.message, HttpStatus.INTERNAL_SERVER_ERROR)
+            HttpResponse.setResp<String>(message = e.message, status = HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 

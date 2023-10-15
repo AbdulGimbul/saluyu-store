@@ -1,2 +1,7 @@
-package com.project.saluyustore.entity 
+package com.project.saluyustore.entity
 
+enum class Role {
+    ADMIN,
+    SUPPLIER,
+    BUYER
+}

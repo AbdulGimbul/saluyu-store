@@ -1,4 +1,4 @@
-package com.project.saluyustore.util
+package com.project.saluyustore.config
 
 import jakarta.validation.ConstraintViolationException
 import jakarta.validation.Validator

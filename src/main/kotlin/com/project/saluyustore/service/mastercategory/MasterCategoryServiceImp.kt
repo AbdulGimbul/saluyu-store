@@ -20,7 +20,7 @@ class MasterCategoryServiceImp(val masterCategoryRepository: MasterCategoryRepos
             }
             HttpResponse.setResp(categories, "Success", categories.size, HttpStatus.OK)
         } catch (e: Exception) {
-            return HttpResponse.setResp(null, e.message, 0, HttpStatus.INTERNAL_SERVER_ERROR)
+            return HttpResponse.setResp<String>(message = e.message, total = 0, status = HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -29,9 +29,9 @@ class MasterCategoryServiceImp(val masterCategoryRepository: MasterCategoryRepos
             val masterCategories = MasterCategories()
             masterCategories.categoryDesc = categoryRequest.categoryDesc
             val saveCategory = masterCategoryRepository.save(masterCategories)
-            HttpResponse.setResp(saveCategory, "Success", HttpStatus.OK)
+            HttpResponse.setResp(saveCategory, "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
-            HttpResponse.setResp(null, e.message, HttpStatus.INTERNAL_SERVER_ERROR)
+            HttpResponse.setResp<String>(message = e.message, status = HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 }

@@ -7,7 +7,7 @@ import com.project.saluyustore.model.request.UpdateUserRequest
 import com.project.saluyustore.model.response.UserResponse
 import com.project.saluyustore.repository.MasterUserRepository
 import com.project.saluyustore.util.NotFoundException
-import com.project.saluyustore.util.ValidationUtil
+import com.project.saluyustore.config.ValidationUtil
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
 import java.util.stream.Collectors
+import kotlin.IllegalArgumentException
 
 @Service
 class MasterUsersServiceImpl(
@@ -25,21 +26,26 @@ class MasterUsersServiceImpl(
 
     override fun create(createUserRequest: CreateUserRequest): UserResponse {
         validationUtil.validate(createUserRequest)
-        if (!masterUserRepository.findFirstByUsername(createUserRequest.username).isEmpty) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Username or email already registered")
+        if (!masterUserRepository.findFirstByUserName(createUserRequest.username).isEmpty) {
+            throw IllegalArgumentException("Username already registered")
+        }
+
+        if (!masterUserRepository.findFirstByEmail(createUserRequest.email).isEmpty) {
+            throw IllegalArgumentException("Email already registered")
         }
 
         val passwd = BCryptPasswordEncoder().encode(createUserRequest.password)
 
         val masterUsers = MasterUsers(
-            username = createUserRequest.username,
+            userName = createUserRequest.username,
             email = createUserRequest.email,
             userRole = createUserRequest.userRole,
-            password = passwd,
+            passwd = passwd,
             createdAt = Date(),
             createdBy = createUserRequest.username,
             modifiedAt = Date(),
             modifiedBy = createUserRequest.username,
+            userActive = true
         )
 
         masterUserRepository.save(masterUsers)
@@ -47,19 +53,19 @@ class MasterUsersServiceImpl(
         return convertUserToUserResponse(masterUsers)
     }
 
-    override fun get(userId: Long): UserResponse {
+    override fun get(userId: Int): UserResponse {
         val user = findByIdOrThrowNotFound(userId)
         return convertUserToUserResponse(user)
     }
 
-    override fun update(userId: Long, updateUserRequest: UpdateUserRequest): UserResponse {
+    override fun update(userId: Int, updateUserRequest: UpdateUserRequest): UserResponse {
         val user = findByIdOrThrowNotFound(userId)
         validationUtil.validate(updateUserRequest)
 
         user.apply {
-            username = updateUserRequest.username
+            userName = updateUserRequest.username
             email = updateUserRequest.email
-            password = updateUserRequest.password
+            passwd = updateUserRequest.password
             modifiedAt = Date()
             modifiedBy = ""
         }
@@ -69,7 +75,7 @@ class MasterUsersServiceImpl(
         return convertUserToUserResponse(user)
     }
 
-    override fun delete(userId: Long) {
+    override fun delete(userId: Int) {
         val user = findByIdOrThrowNotFound(userId)
         masterUserRepository.delete(user)
     }
@@ -80,7 +86,7 @@ class MasterUsersServiceImpl(
         return masterUsers.map { convertUserToUserResponse(it) }
     }
 
-    private fun findByIdOrThrowNotFound(userId: Long): MasterUsers {
+    private fun findByIdOrThrowNotFound(userId: Int): MasterUsers {
         val user = masterUserRepository.findByIdOrNull(userId)
         if (user == null) {
             throw NotFoundException()

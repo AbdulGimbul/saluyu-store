@@ -3,17 +3,18 @@ package com.project.saluyustore.service.masterusers
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.ListUserRequest
 import com.project.saluyustore.model.request.UpdateUserRequest
+import com.project.saluyustore.model.response.AuthResponse
 import com.project.saluyustore.model.response.UserResponse
 
 interface MasterUsersService {
 
     fun create(createUserRequest: CreateUserRequest): UserResponse
 
-    fun get(userId: Long): UserResponse
+    fun get(userId: Int): UserResponse
 
-    fun update(userId: Long, updateUserRequest: UpdateUserRequest): UserResponse
+    fun update(userId: Int, updateUserRequest: UpdateUserRequest): UserResponse
 
-    fun delete(userId: Long)
+    fun delete(userId: Int)
 
     fun list(listUserRequest: ListUserRequest): List<UserResponse>
 }

@@ -6,52 +6,21 @@ import java.util.*
 
 class HttpResponse {
     companion object {
-        fun <T> setResp(data: T?, message: String?, total: Int?, status: HttpStatus): ResponseEntity<*> {
-            val httpResp = buildMap {
-                put("data", data)
-                put("message", message)
-                put("totalRow", total)
-                put("timestamp", Date())
-                put("status", status.value())
-            }
-            return ResponseEntity.status(status.value()).body(httpResp)
-        }
+        fun <T> setResp(data: T? = null, message: String? = null, total: Int? = null, status: HttpStatus): ResponseEntity<*> {
+            val httpResp = mutableMapOf<String, Any?>()
+            httpResp["timestamp"] = Date()
+            httpResp["status"] = status.value()
 
-        fun <T> setResp(data: T?, total: Int?, status: HttpStatus): ResponseEntity<*> {
-            val httpResp = buildMap {
-                put("data", data)
-                put("totalRow", total)
-                put("timestamp", Date())
-                put("status", status.value())
+            if (data != null) {
+                httpResp["data"] = data
             }
-            return ResponseEntity.status(status.value()).body(httpResp)
-        }
+            if (message != null) {
+                httpResp["message"] = message
+            }
+            if (total != null) {
+                httpResp["totalRow"] = total
+            }
 
-        fun <T> setResp(data: T?, message: String?, status: HttpStatus): ResponseEntity<*> {
-            val httpResp = buildMap {
-                put("data", data)
-                put("message", message)
-                put("timestamp", Date())
-                put("status", status.value())
-            }
-            return ResponseEntity.status(status.value()).body(httpResp)
-        }
-
-        fun <T> setResp(data: T?, status: HttpStatus): ResponseEntity<*> {
-            val httpResp = buildMap {
-                put("data", data)
-                put("timestamp", Date())
-                put("status", status.value())
-            }
-            return ResponseEntity.status(status.value()).body(httpResp)
-        }
-
-        fun setResp(message: String?, status: HttpStatus): ResponseEntity<*> {
-            val httpResp = buildMap {
-                put("message", message)
-                put("timestamp", Date())
-                put("status", status.value())
-            }
             return ResponseEntity.status(status.value()).body(httpResp)
         }
     }

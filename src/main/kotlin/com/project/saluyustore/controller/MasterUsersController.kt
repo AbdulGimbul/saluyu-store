@@ -25,9 +25,9 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
         return try {
             val userResponse = masterUsersService.create(body)
 
-            HttpResponse.setResp(userResponse, "Success", HttpStatus.OK)
+            HttpResponse.setResp(data = userResponse, message = "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
-            HttpResponse.setResp(null, e.message, HttpStatus.BAD_REQUEST)
+            HttpResponse.setResp<String>(message = e.message, status = HttpStatus.BAD_REQUEST)
         }
     }
 
@@ -35,13 +35,13 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
         summary = "Get user",
     )
     @GetMapping("/{userId}")
-    fun getUser(@PathVariable("userId") userId: Long): ResponseEntity<*> {
+    fun getUser(@PathVariable("userId") userId: Int): ResponseEntity<*> {
         return try {
             val userResponse = masterUsersService.get(userId)
 
-            HttpResponse.setResp(userResponse, "Success", HttpStatus.OK)
+            HttpResponse.setResp(data = userResponse, message = "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
-            HttpResponse.setResp(null, e.message, HttpStatus.BAD_REQUEST)
+            HttpResponse.setResp(data = null, message = e.message, status = HttpStatus.BAD_REQUEST)
         }
     }
 
@@ -50,15 +50,15 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
     )
     @PutMapping("/{userId}")
     fun updateUser(
-        @PathVariable("userId") userId: Long,
+        @PathVariable("userId") userId: Int,
         @RequestBody updateUserRequest: UpdateUserRequest
     ): ResponseEntity<*> {
         return try {
             val userResponse = masterUsersService.update(userId, updateUserRequest)
 
-            HttpResponse.setResp(userResponse, "Success", HttpStatus.OK)
+            HttpResponse.setResp(userResponse, "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
-            HttpResponse.setResp(null, e.message, HttpStatus.BAD_REQUEST)
+            HttpResponse.setResp(null, e.message, status = HttpStatus.BAD_REQUEST)
         }
     }
 
@@ -66,13 +66,13 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
         summary = "Delete user",
     )
     @DeleteMapping("/{userId}")
-    fun deleteUser(@PathVariable("userId") userId: Long): ResponseEntity<*> {
+    fun deleteUser(@PathVariable("userId") userId: Int): ResponseEntity<*> {
         return try {
             masterUsersService.delete(userId)
 
-            HttpResponse.setResp("Success", HttpStatus.OK)
+            HttpResponse.setResp("Success", status = HttpStatus.OK)
         } catch (e: Exception) {
-            HttpResponse.setResp(e.message, HttpStatus.BAD_REQUEST)
+            HttpResponse.setResp(e.message, status = HttpStatus.BAD_REQUEST)
         }
     }
 
@@ -88,9 +88,9 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
             val request = ListUserRequest(page = page, size = size)
             val responses = masterUsersService.list(request)
 
-            HttpResponse.setResp(responses, "Success", HttpStatus.OK)
+            HttpResponse.setResp(responses, "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
-            HttpResponse.setResp(null, e.message, HttpStatus.BAD_REQUEST)
+            HttpResponse.setResp(null, e.message, status = HttpStatus.BAD_REQUEST)
         }
     }
 }

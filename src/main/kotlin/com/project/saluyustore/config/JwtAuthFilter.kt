@@ -1,67 +1,60 @@
 package com.project.saluyustore.config
 
-import com.project.saluyustore.model.response.JwtTokenResponse
-import com.project.saluyustore.repository.MasterUserRepository
-import com.project.saluyustore.util.JwtTokenUtil
-import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.SignatureException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.lang.NonNull
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
-import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+import org.springframework.web.servlet.HandlerExceptionResolver
 import java.io.IOException
 
-@Component
 class JwtAuthFilter(
-    private val jwtTokenUtil: JwtTokenUtil,
-    private val userDetailsService: UserDetailsService,
-    private val masterUserRepository: MasterUserRepository
+    private val exceptionResolver: HandlerExceptionResolver
 ) :
     OncePerRequestFilter() {
+
+    @Autowired
+    private lateinit var jwtService: JwtService
+
+    @Autowired
+    private lateinit var userDetailsService: UserDetailsService
+
     @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        filterChain: FilterChain
+        @NonNull request: HttpServletRequest,
+        @NonNull response: HttpServletResponse,
+        @NonNull filterChain: FilterChain
     ) {
         val header = request.getHeader("Authorization")
-        var username: String? = null
+        var username = ""
         var token = ""
-        var jwtTokenDto: JwtTokenResponse? = JwtTokenResponse()
-        if (header != null && header.startsWith("Bearer ")) {
-            token = header.replace("Bearer ", "")
-            try {
-                jwtTokenDto = jwtTokenUtil.extractToken(token)
-                username = jwtTokenDto!!.username
-            } catch (e: IllegalArgumentException) {
-                logger.error("Username tidak ditemukan")
-            } catch (e: ExpiredJwtException) {
-                logger.warn("Token Expired")
-            } catch (e: SignatureException) {
-                logger.error("Username atau password tidak sesuai")
+        try {
+            if (header == null || !header.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response)
+                return
             }
-        } else {
-            logger.warn("Header tidak di set / tidak menemukan kata Bearer ")
-        }
-        if (username != null && SecurityContextHolder.getContext().authentication == null) {
-            val userDetails = userDetailsService.loadUserByUsername(username)
-            val isTokenValid = masterUserRepository.findFirstByToken(token)
-                .map { it.token == token }
-                .orElse(false)
-            if (jwtTokenUtil.validationToken(token, userDetails) && isTokenValid) {
-                val authenticationToken =
-                    UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
-                authenticationToken.details = WebAuthenticationDetailsSource().buildDetails(request)
-                SecurityContextHolder.getContext().authentication = authenticationToken
+            token = header.substring(7)
+            username = jwtService.extractUsername(token)
+            if (username.isNotBlank() && SecurityContextHolder.getContext().authentication == null) {
+                val userDetails: UserDetails = userDetailsService.loadUserByUsername(username)
+                if (jwtService.isTokenValid(token, userDetails)) {
+                    val authToken = UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.authorities
+                    )
+                    authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
+                    SecurityContextHolder.getContext().authentication = authToken
+                }
             }
+            filterChain.doFilter(request, response)
+        } catch (e: Exception) {
+            exceptionResolver.resolveException(request, response, null, e)
         }
-        request.setAttribute("User-Data", jwtTokenDto)
-        filterChain.doFilter(request, response)
     }
 }

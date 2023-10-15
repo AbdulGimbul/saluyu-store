@@ -1,31 +1,33 @@
 package com.project.saluyustore.controller
 
+import com.project.saluyustore.entity.MasterUsers
 import com.project.saluyustore.model.request.LoginUserRequest
+import com.project.saluyustore.model.response.AuthResponse
+import com.project.saluyustore.model.response.UserLoginResponse
 import com.project.saluyustore.service.masterusers.AuthService
 import com.project.saluyustore.util.HttpResponse
+import io.swagger.v3.oas.annotations.Operation
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import javax.security.sasl.AuthenticationException
 
 @RestController
 @RequestMapping("/api/auth")
-class AuthServiceController(val authService: AuthService) {
+class AuthController(private val authService: AuthService) {
 
-    @PostMapping("/login")
+    @PostMapping(
+        path = ["/login"],
+        consumes = ["application/json"],
+        produces = ["application/json"]
+    )
     fun loginUser(
         @RequestBody loginUserRequest: LoginUserRequest,
         httpServletRequest: HttpServletRequest,
     ): ResponseEntity<*> {
-        return try {
-            val loginResponse = authService.login(loginUserRequest, httpServletRequest)
-
-            HttpResponse.setResp(loginResponse, "Login Success", HttpStatus.OK)
-        } catch (e: Exception) {
-            HttpResponse.setResp(null, e.message, HttpStatus.BAD_REQUEST)
-        }
+        val userLogin = authService.login(loginUserRequest, httpServletRequest)
+        return HttpResponse.setResp(data = userLogin, message = "Success", status = HttpStatus.OK)
     }
 }

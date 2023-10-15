@@ -1,23 +1,26 @@
 package com.project.saluyustore.service.masterusers
 
+import com.project.saluyustore.config.JwtService
 import com.project.saluyustore.entity.MasterUsers
 import com.project.saluyustore.model.request.LoginUserRequest
-import com.project.saluyustore.model.response.JwtTokenResponse
-import com.project.saluyustore.model.response.UserLoginResponse
 import com.project.saluyustore.repository.MasterUserRepository
-import com.project.saluyustore.util.JwtTokenUtil
+import com.project.saluyustore.model.response.AuthResponse
+import com.project.saluyustore.model.response.UserLoginResponse
 import com.project.saluyustore.util.NotFoundException
 import jakarta.servlet.http.HttpServletRequest
+import lombok.extern.slf4j.Slf4j
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 
 @Service
+@Slf4j
 class AuthServiceImpl(
     val masterUserRepository: MasterUserRepository,
     val authManager: AuthenticationManager,
-    val jwtTokenUtil: JwtTokenUtil,
+    val jwtService: JwtService
 ) : AuthService {
 
     override fun login(loginUserRequest: LoginUserRequest, httpServletRequest: HttpServletRequest): UserLoginResponse {
@@ -28,16 +31,13 @@ class AuthServiceImpl(
                 loginUserRequest.password
             )
         )
-        val userByUsername = masterUserRepository.findByUsername(loginUserRequest.username)
 
-        val jwtTokenResponse = JwtTokenResponse(
-            userId = userByUsername.userId,
-            username = userByUsername.username,
-            email = userByUsername.email,
-            role = userByUsername.userRole
-        )
+        val userByUsername = masterUserRepository.findFirstByUserName(loginUserRequest.username)
+            .orElseThrow()
 
-        userByUsername.token = jwtTokenUtil.generateToken(jwtTokenResponse, httpServletRequest)
+        val jwtToken = jwtService.generateToken(userByUsername)
+
+        userByUsername.token = jwtToken
         userByUsername.tokenExpiredAt = next7Days()
         masterUserRepository.save(userByUsername)
 
@@ -53,19 +53,11 @@ class AuthServiceImpl(
         return userLoginResponse
     }
 
-    override fun logout(userId: Long) {
-        val user = findByIdOrThrowNotFound(userId)
-        user.token = null
-        user.tokenExpiredAt = null
-
-        masterUserRepository.save(user)
-    }
-
     private fun next7Days(): Long {
         return System.currentTimeMillis() + (1000 * 16 * 24 * 7)
     }
 
-    private fun findByIdOrThrowNotFound(userId: Long): MasterUsers {
+    private fun findByIdOrThrowNotFound(userId: Int): MasterUsers {
         val user = masterUserRepository.findByIdOrNull(userId)
         if (user == null) {
             throw NotFoundException()

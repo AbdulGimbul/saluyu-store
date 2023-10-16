@@ -5,11 +5,16 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.project.saluyustore.entity.MasterUsers
 import com.project.saluyustore.entity.Role
 import com.project.saluyustore.model.request.CreateUserRequest
+import com.project.saluyustore.model.request.LoginUserRequest
+import com.project.saluyustore.model.request.UpdateUserRequest
 import com.project.saluyustore.repository.MasterUserRepository
-import org.junit.jupiter.api.Assertions.*
+import org.apache.commons.lang3.RandomStringUtils
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -24,7 +29,10 @@ import java.util.*
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension::class)
-class MasterUsersControllerTest{
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class MasterUsersControllerTest {
+
+    private val loggerFactory = LoggerFactory.getLogger(MasterUsersControllerTest::class.java)
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -35,42 +43,79 @@ class MasterUsersControllerTest{
     @Autowired
     private lateinit var masterUserRepository: MasterUserRepository
 
-//    @BeforeEach
-//    fun setUp(){
-//
-//    }
+    private lateinit var userToken: String
+
+    private var idUserRegis: String = ""
+
+    @BeforeEach
+    fun setUp() {
+        val request = LoginUserRequest(
+            username = "abdl",
+            password = "rahasia"
+        )
+
+        val tokenResponse = mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/auth/login")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+        )
+            .andExpect(
+                MockMvcResultMatchers.status().isOk
+            )
+            .andExpect(MockMvcResultMatchers.jsonPath("$.data.userToken").isNotEmpty)
+            .andReturn()
+            .response
+            .contentAsString
+
+        val jsonNode = objectMapper.readTree(tokenResponse)
+
+        userToken = jsonNode.path("data").path("userToken").asText()
+
+    }
 
     @Test
-    fun registerSuccess(){
-        val user = masterUserRepository.findFirstByUserName("abdl").orElse(null)
+    @Order(1)
+    fun registerSuccess() {
+        val user = masterUserRepository.findFirstByUserName("regis").orElse(null)
         if (user != null) {
             masterUserRepository.delete(user)
         }
 
+        val pswd = RandomStringUtils.randomAlphanumeric(10)
+
         val request = CreateUserRequest(
-            username = "abdl",
-            email = "abdl@example.com",
-            password = "rahasia",
+            username = "regis",
+            email = "regis@example.com",
+            password = pswd,
             userActive = true,
             userRole = Role.BUYER
         )
 
-        mockMvc.perform(
+        val response = mockMvc.perform(
             MockMvcRequestBuilders.post("/api/users")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jacksonObjectMapper().writeValueAsString(request))
+                .header("Authorization", "Bearer $userToken")
+                .content(objectMapper.writeValueAsString(request))
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Success"))
+            .andReturn()
+            .response
+            .contentAsString
+
+        val jsonNode = objectMapper.readTree(response)
+
+        idUserRegis = jsonNode.path("data").path("userId").asText()
     }
 
     @Test
-    fun registerBadRequest(){
+    fun registerBadRequest() {
         val request = CreateUserRequest(
             username = "",
-            email = "",
-            password = "",
+            email = "bad@example.com",
+            password = "rahasia",
             userActive = false,
             userRole = Role.BUYER
         )
@@ -79,14 +124,18 @@ class MasterUsersControllerTest{
             MockMvcRequestBuilders.post("/api/users")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer $userToken")
                 .content(jacksonObjectMapper().writeValueAsString(request))
         )
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("username: Username must not be blank, email: Email must not be blank, password: Password must not be blank"))
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("$.message")
+                    .value("username: Username must not be blank")
+            )
     }
 
     @Test
-    fun registerDuplicate(){
+    fun registerDuplicate() {
         val user = masterUserRepository.findFirstByEmail("duplicate@example.com").orElse(null)
         if (user != null) {
             masterUserRepository.delete(user)
@@ -120,9 +169,128 @@ class MasterUsersControllerTest{
             MockMvcRequestBuilders.post("/api/users")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer $userToken")
                 .content(jacksonObjectMapper().writeValueAsString(request))
         )
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Email already registered"))
+    }
+
+    @Test
+    fun getUserUnauthorized() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/users")
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isForbidden)
+    }
+
+    @Test
+    fun getUserSuccess() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/users/552")
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer $userToken")
+
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Success"))
+    }
+
+    @Test
+    fun getAllUserSuccess() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/users")
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer $userToken")
+
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Success"))
+    }
+
+    @Test
+    fun getUserTokenNotValid() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/users")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(
+                    "Authorization",
+                    "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOJhYmRsMiIsImlhdCI6MTY5NzQxNTc4MSwiZXhwIjoxNjk3NDE3MjIxfQ.4EV26N453H0yVTrwMFHhI85eVHCBUdkw3sGZKi0nI_U"
+                )
+
+        )
+            .andExpect(MockMvcResultMatchers.status().isForbidden)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("JWT signature is not valid!"))
+    }
+
+    @Test
+    fun getUserTokenExpired() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/users")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(
+                    "Authorization",
+                    "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmRsMiIsImlhdCI6MTY5NzQyMDIyMCwiZXhwIjoxNjk3NDIxNjYwfQ.yoU3vB39hBQeIVLQtzNwm3s5M2cDYfHXqDmVrIxlCEM"
+                )
+
+        )
+            .andExpect(MockMvcResultMatchers.status().isForbidden)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("JWT token already expired"))
+    }
+
+    @Test
+    fun updateRegisterSuccess() {
+        val pswd = RandomStringUtils.randomAlphanumeric(10)
+
+        val request = UpdateUserRequest(
+            password = pswd,
+        )
+
+        loggerFactory.info("cek passwordnya: $pswd")
+        loggerFactory.info("cek alah usernya lagi: $idUserRegis")
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.put("/api/users/$idUserRegis")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer $userToken")
+                .content(objectMapper.writeValueAsString(request))
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Success"))
+    }
+
+    @Test
+    fun deleteUser() {
+        val user = masterUserRepository.findFirstByUserName("delete").orElse(null)
+        if (user != null) {
+            masterUserRepository.delete(user)
+        }
+
+        val masterUsers = MasterUsers(
+            userName = "delete",
+            email = "delete@example.com",
+            userRole = Role.BUYER,
+            passwd = BCrypt.hashpw("delete", BCrypt.gensalt()),
+            createdAt = Date(),
+            createdBy = "delete",
+            modifiedAt = Date(),
+            modifiedBy = "delete",
+            userActive = true,
+            token = "delete",
+            tokenExpiredAt = System.currentTimeMillis() + 100000
+        )
+
+        val savedUser = masterUserRepository.save(masterUsers)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/api/users/${savedUser.userId}")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer $userToken")
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Success"))
     }
 }

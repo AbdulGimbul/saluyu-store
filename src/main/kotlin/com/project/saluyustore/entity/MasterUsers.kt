@@ -6,11 +6,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.util.*
 
-import java.util.Date
-
 @Entity
 @Table(name = "master_user")
-data class MasterUsers (
+data class MasterUsers(
     @Id
     @GeneratedValue
     @Column(name = "user_id")

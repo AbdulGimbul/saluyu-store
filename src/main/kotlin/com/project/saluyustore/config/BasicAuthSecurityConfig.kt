@@ -4,16 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationProvider
-import org.springframework.security.config.Customizer
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.logout.LogoutHandler
@@ -27,12 +24,12 @@ class BasicAuthSecurityConfig(
     private val logoutHandler: LogoutHandler
 ) {
 
-    @Autowired
     @Qualifier("handlerExceptionResolver")
+    @Autowired
     private lateinit var exceptionResolver: HandlerExceptionResolver
 
     @Bean
-    fun jwtAuthFilter(): JwtAuthFilter{
+    fun jwtAuthFilter(): JwtAuthFilter {
         return JwtAuthFilter(exceptionResolver)
     }
 
@@ -42,6 +39,8 @@ class BasicAuthSecurityConfig(
         http.csrf { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers(*PATH_ARRAY)
+                    .permitAll()
+                it.requestMatchers(HttpMethod.POST, "/api/users")
                     .permitAll()
                     .anyRequest()
                     .authenticated()

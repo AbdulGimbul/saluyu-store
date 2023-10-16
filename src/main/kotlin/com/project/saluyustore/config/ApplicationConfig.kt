@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -20,12 +19,14 @@ class ApplicationConfig(
 
     @Bean
     fun userDetailService(): UserDetailsService {
-        return UserDetailsService { username -> masterUserRepository.findFirstByUserName(username)
-            .orElseThrow { UsernameNotFoundException("User Not Found") }}
+        return UserDetailsService { username ->
+            masterUserRepository.findFirstByUserName(username)
+                .orElseThrow { UsernameNotFoundException("User Not Found") }
+        }
     }
 
     @Bean
-    fun authProvider() : AuthenticationProvider {
+    fun authProvider(): AuthenticationProvider {
         val authProvider = DaoAuthenticationProvider()
         authProvider.setUserDetailsService(userDetailService())
         authProvider.setPasswordEncoder(passwordEncoder());

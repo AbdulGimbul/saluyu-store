@@ -21,7 +21,7 @@ class LogoutService(
         token = header.substring(7)
         val storedToken = masterUserRepository.findFirstByToken(token)
             .orElse(null)
-        if (storedToken != null){
+        if (storedToken != null) {
             storedToken.tokenExpiredAt = null
             storedToken.token = null
             masterUserRepository.save(storedToken)

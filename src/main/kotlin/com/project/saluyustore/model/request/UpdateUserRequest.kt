@@ -1,22 +1,14 @@
 package com.project.saluyustore.model.request
 
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotNull
-
 data class UpdateUserRequest(
 
-    @field:NotBlank
-    var username: String = "",
+    var username: String? = null,
 
-    @field:NotBlank
-    val email: String = "",
+    val email: String? = null,
 
-    @field:NotBlank
-    val password: String = "",
+    val password: String? = null,
 
-    @field:NotNull
-    val userActive: Boolean? = true,
+    val userActive: Boolean? = null,
 
-    @field:NotNull
-    val userRole: Int? = 2,
+    val userRole: Int? = null,
 )

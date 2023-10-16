@@ -1,5 +1,6 @@
 package com.project.saluyustore.service.masterusers
 
+import com.project.saluyustore.config.ValidationUtil
 import com.project.saluyustore.entity.MasterUsers
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.ListUserRequest
@@ -7,16 +8,12 @@ import com.project.saluyustore.model.request.UpdateUserRequest
 import com.project.saluyustore.model.response.UserResponse
 import com.project.saluyustore.repository.MasterUserRepository
 import com.project.saluyustore.util.NotFoundException
-import com.project.saluyustore.config.ValidationUtil
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.web.server.ResponseStatusException
 import java.util.*
 import java.util.stream.Collectors
-import kotlin.IllegalArgumentException
 
 @Service
 class MasterUsersServiceImpl(
@@ -63,11 +60,11 @@ class MasterUsersServiceImpl(
         validationUtil.validate(updateUserRequest)
 
         user.apply {
-            userName = updateUserRequest.username
-            email = updateUserRequest.email
-            passwd = updateUserRequest.password
+            updateUserRequest.username?.let { userName = it }
+            updateUserRequest.email?.let { email = it }
+            updateUserRequest.password?.let { passwd = BCryptPasswordEncoder().encode(it) }
             modifiedAt = Date()
-            modifiedBy = ""
+            modifiedBy = user.userName
         }
 
         masterUserRepository.save(user)
@@ -105,7 +102,7 @@ class MasterUsersServiceImpl(
             createdAt = masterUsers.createdAt,
             createdBy = masterUsers.username,
             modifiedAt = masterUsers.modifiedAt,
-            modifiedBy = ""
+            modifiedBy = masterUsers.modifiedBy
         )
     }
 }

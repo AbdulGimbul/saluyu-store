@@ -6,7 +6,12 @@ import java.util.*
 
 class HttpResponse {
     companion object {
-        fun <T> setResp(data: T? = null, message: String? = null, total: Int? = null, status: HttpStatus): ResponseEntity<*> {
+        fun <T> setResp(
+            data: T? = null,
+            message: String? = null,
+            total: Int? = null,
+            status: HttpStatus
+        ): ResponseEntity<*> {
             val httpResp = mutableMapOf<String, Any?>()
             httpResp["timestamp"] = Date()
             httpResp["status"] = status.value()

@@ -3,7 +3,6 @@ package com.project.saluyustore.service.masterusers
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.ListUserRequest
 import com.project.saluyustore.model.request.UpdateUserRequest
-import com.project.saluyustore.model.response.AuthResponse
 import com.project.saluyustore.model.response.UserResponse
 
 interface MasterUsersService {

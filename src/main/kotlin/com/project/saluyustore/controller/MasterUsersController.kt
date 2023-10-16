@@ -41,7 +41,7 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
 
             HttpResponse.setResp(data = userResponse, message = "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
-            HttpResponse.setResp(data = null, message = e.message, status = HttpStatus.BAD_REQUEST)
+            HttpResponse.setResp<String>(message = e.message, status = HttpStatus.BAD_REQUEST)
         }
     }
 
@@ -58,7 +58,7 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
 
             HttpResponse.setResp(userResponse, "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
-            HttpResponse.setResp(null, e.message, status = HttpStatus.BAD_REQUEST)
+            HttpResponse.setResp<String>(message = e.message, status = HttpStatus.BAD_REQUEST)
         }
     }
 
@@ -70,9 +70,9 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
         return try {
             masterUsersService.delete(userId)
 
-            HttpResponse.setResp("Success", status = HttpStatus.OK)
+            HttpResponse.setResp<String>(message = "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
-            HttpResponse.setResp(e.message, status = HttpStatus.BAD_REQUEST)
+            HttpResponse.setResp<String>(message = e.message, status = HttpStatus.BAD_REQUEST)
         }
     }
 
@@ -90,7 +90,7 @@ class MasterUsersController(val masterUsersService: MasterUsersService) {
 
             HttpResponse.setResp(responses, "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
-            HttpResponse.setResp(null, e.message, status = HttpStatus.BAD_REQUEST)
+            HttpResponse.setResp<String>(message = e.message, status = HttpStatus.BAD_REQUEST)
         }
     }
 }

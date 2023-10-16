@@ -20,7 +20,11 @@ class MasterCategoryServiceImp(val masterCategoryRepository: MasterCategoryRepos
             }
             HttpResponse.setResp(categories, "Success", categories.size, HttpStatus.OK)
         } catch (e: Exception) {
-            return HttpResponse.setResp<String>(message = e.message, total = 0, status = HttpStatus.INTERNAL_SERVER_ERROR)
+            return HttpResponse.setResp<String>(
+                message = e.message,
+                total = 0,
+                status = HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
     }
 

@@ -1,12 +1,10 @@
 package com.project.saluyustore.controller
 
-import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.project.saluyustore.entity.MasterUsers
 import com.project.saluyustore.entity.Role
 import com.project.saluyustore.model.request.LoginUserRequest
 import com.project.saluyustore.repository.MasterUserRepository
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -60,7 +58,7 @@ class AuthControllerTest {
     }
 
     @Test
-    fun loginSuccess(){
+    fun loginSuccess() {
         val request = LoginUserRequest(
             username = "abdl",
             password = "rahasia"
@@ -80,7 +78,7 @@ class AuthControllerTest {
 
     @Test
     fun logout() {
-        val user = masterUserRepository.findFirstByToken("testlogout").orElse(null)
+        val user = masterUserRepository.findFirstByUserName("testlogout").orElse(null)
         if (user != null) {
             masterUserRepository.delete(user)
         }

@@ -3,16 +3,14 @@ package com.project.saluyustore.service.masterusers
 import com.project.saluyustore.config.JwtService
 import com.project.saluyustore.entity.MasterUsers
 import com.project.saluyustore.model.request.LoginUserRequest
-import com.project.saluyustore.repository.MasterUserRepository
-import com.project.saluyustore.model.response.AuthResponse
 import com.project.saluyustore.model.response.UserLoginResponse
+import com.project.saluyustore.repository.MasterUserRepository
 import com.project.saluyustore.util.NotFoundException
 import jakarta.servlet.http.HttpServletRequest
 import lombok.extern.slf4j.Slf4j
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 
 @Service

@@ -2,15 +2,14 @@ package com.project.saluyustore.advice
 
 import com.project.saluyustore.util.HttpResponse
 import io.jsonwebtoken.ExpiredJwtException
+import io.jsonwebtoken.security.SignatureException
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
-import org.springframework.http.ProblemDetail
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.security.core.AuthenticationException
+import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import java.security.SignatureException
 
 @RestControllerAdvice
 class CustomExceptionHandler {
@@ -18,12 +17,18 @@ class CustomExceptionHandler {
     @ExceptionHandler(Exception::class)
     fun handleSecurityException(e: Exception): ResponseEntity<*> {
 
-        if (e is BadCredentialsException) {
-            return HttpResponse.setResp<String>(message = "Username or password is wrong!", status = HttpStatus.UNAUTHORIZED)
+        if (e is HttpRequestMethodNotSupportedException) {
+            return HttpResponse.setResp<String>(
+                message = "Wrong HTTP method used!",
+                status = HttpStatus.METHOD_NOT_ALLOWED
+            )
         }
 
-        if (e is AuthenticationException) {
-            return HttpResponse.setResp<String>(message = "No auth header provider found", status = HttpStatus.UNAUTHORIZED)
+        if (e is BadCredentialsException) {
+            return HttpResponse.setResp<String>(
+                message = "Username or password is wrong!",
+                status = HttpStatus.UNAUTHORIZED
+            )
         }
 
         if (e is AccessDeniedException) {
@@ -41,5 +46,4 @@ class CustomExceptionHandler {
         // Add a default response for other exceptions
         return HttpResponse.setResp<String>(message = "An error occurred", status = HttpStatus.INTERNAL_SERVER_ERROR)
     }
-
 }

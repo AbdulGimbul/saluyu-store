@@ -4,7 +4,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "master_category")
-data class MasterCategories(
+data class MasterCategory(
     @field:Id
     @field:GeneratedValue(strategy = GenerationType.SEQUENCE)
     @field:Column(name = "category_id")

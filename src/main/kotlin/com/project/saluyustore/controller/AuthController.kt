@@ -1,7 +1,7 @@
 package com.project.saluyustore.controller
 
 import com.project.saluyustore.model.request.LoginUserRequest
-import com.project.saluyustore.service.masterusers.AuthService
+import com.project.saluyustore.service.masteruser.AuthService
 import com.project.saluyustore.util.HttpResponse
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus

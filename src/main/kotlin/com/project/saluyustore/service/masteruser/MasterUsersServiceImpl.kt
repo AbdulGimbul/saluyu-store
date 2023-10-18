@@ -1,7 +1,7 @@
-package com.project.saluyustore.service.masterusers
+package com.project.saluyustore.service.masteruser
 
 import com.project.saluyustore.config.ValidationUtil
-import com.project.saluyustore.entity.MasterUsers
+import com.project.saluyustore.entity.MasterUser
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.ListUserRequest
 import com.project.saluyustore.model.request.UpdateUserRequest
@@ -33,7 +33,7 @@ class MasterUsersServiceImpl(
 
         val passwd = BCryptPasswordEncoder().encode(createUserRequest.password)
 
-        val masterUsers = MasterUsers(
+        val masterUser = MasterUser(
             userName = createUserRequest.username,
             email = createUserRequest.email,
             userRole = createUserRequest.userRole,
@@ -45,9 +45,9 @@ class MasterUsersServiceImpl(
             userActive = true
         )
 
-        masterUserRepository.save(masterUsers)
+        masterUserRepository.save(masterUser)
 
-        return convertUserToUserResponse(masterUsers)
+        return convertUserToUserResponse(masterUser)
     }
 
     override fun get(userId: Int): UserResponse {
@@ -79,11 +79,11 @@ class MasterUsersServiceImpl(
 
     override fun list(listUserRequest: ListUserRequest): List<UserResponse> {
         val page = masterUserRepository.findAll(PageRequest.of(listUserRequest.page, listUserRequest.size))
-        val masterUsers: List<MasterUsers> = page.get().collect(Collectors.toList())
+        val masterUsers: List<MasterUser> = page.get().collect(Collectors.toList())
         return masterUsers.map { convertUserToUserResponse(it) }
     }
 
-    private fun findByIdOrThrowNotFound(userId: Int): MasterUsers {
+    private fun findByIdOrThrowNotFound(userId: Int): MasterUser {
         val user = masterUserRepository.findByIdOrNull(userId)
         if (user == null) {
             throw NotFoundException()
@@ -92,17 +92,17 @@ class MasterUsersServiceImpl(
         }
     }
 
-    private fun convertUserToUserResponse(masterUsers: MasterUsers): UserResponse {
+    private fun convertUserToUserResponse(masterUser: MasterUser): UserResponse {
         return UserResponse(
-            userId = masterUsers.userId,
-            username = masterUsers.username,
-            email = masterUsers.email,
-            userActive = masterUsers.userActive,
-            userRole = masterUsers.userRole,
-            createdAt = masterUsers.createdAt,
-            createdBy = masterUsers.username,
-            modifiedAt = masterUsers.modifiedAt,
-            modifiedBy = masterUsers.modifiedBy
+            userId = masterUser.userId,
+            username = masterUser.username,
+            email = masterUser.email,
+            userActive = masterUser.userActive,
+            userRole = masterUser.userRole,
+            createdAt = masterUser.createdAt,
+            createdBy = masterUser.username,
+            modifiedAt = masterUser.modifiedAt,
+            modifiedBy = masterUser.modifiedBy
         )
     }
 }

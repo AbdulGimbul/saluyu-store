@@ -5,7 +5,7 @@ import java.sql.Date
 
 @Entity
 @Table(name = "master_product")
-data class MasterProducts(
+data class MasterProduct(
     @field:Id
     @field:GeneratedValue(strategy = GenerationType.SEQUENCE)
     @field:Column(name = "item_id")

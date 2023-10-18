@@ -8,7 +8,7 @@ import java.util.*
 
 @Entity
 @Table(name = "master_user")
-data class MasterUsers(
+data class MasterUser(
     @Id
     @GeneratedValue
     @Column(name = "user_id")

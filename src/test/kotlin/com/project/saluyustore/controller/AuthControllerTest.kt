@@ -1,7 +1,7 @@
 package com.project.saluyustore.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.project.saluyustore.entity.MasterUsers
+import com.project.saluyustore.entity.MasterUser
 import com.project.saluyustore.entity.Role
 import com.project.saluyustore.model.request.LoginUserRequest
 import com.project.saluyustore.repository.MasterUserRepository
@@ -83,7 +83,7 @@ class AuthControllerTest {
             masterUserRepository.delete(user)
         }
 
-        val masterUsers = MasterUsers(
+        val masterUser = MasterUser(
             userName = "testlogout",
             email = "testlogout@example.com",
             userRole = Role.BUYER,
@@ -97,7 +97,7 @@ class AuthControllerTest {
             tokenExpiredAt = System.currentTimeMillis() + 100000
         )
 
-        masterUserRepository.save(masterUsers)
+        masterUserRepository.save(masterUser)
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/auth/logout")

@@ -1,4 +1,4 @@
-package com.project.saluyustore.service.masterusers
+package com.project.saluyustore.service.masteruser
 
 import com.project.saluyustore.model.request.LoginUserRequest
 import com.project.saluyustore.model.response.UserLoginResponse

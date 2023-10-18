@@ -1,4 +1,4 @@
-package com.project.saluyustore.service.masteritems
+package com.project.saluyustore.service.masterproduct
 
 import com.project.saluyustore.repository.MasterItemsRepository
 import com.project.saluyustore.util.HttpResponse
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 @Transactional
-class MasterItemsServiceImp(private val masterItemsRepository: MasterItemsRepository) : MasterItemsService {
+class MasterProductServiceImp(private val masterItemsRepository: MasterItemsRepository) : MasterProductService {
 
     override fun getItems(): ResponseEntity<*> {
         return try {

@@ -1,7 +1,7 @@
-package com.project.saluyustore.service.masterusers
+package com.project.saluyustore.service.masteruser
 
 import com.project.saluyustore.config.JwtService
-import com.project.saluyustore.entity.MasterUsers
+import com.project.saluyustore.entity.MasterUser
 import com.project.saluyustore.model.request.LoginUserRequest
 import com.project.saluyustore.model.response.UserLoginResponse
 import com.project.saluyustore.repository.MasterUserRepository
@@ -55,7 +55,7 @@ class AuthServiceImpl(
         return System.currentTimeMillis() + (1000 * 16 * 24 * 7)
     }
 
-    private fun findByIdOrThrowNotFound(userId: Int): MasterUsers {
+    private fun findByIdOrThrowNotFound(userId: Int): MasterUser {
         val user = masterUserRepository.findByIdOrNull(userId)
         if (user == null) {
             throw NotFoundException()

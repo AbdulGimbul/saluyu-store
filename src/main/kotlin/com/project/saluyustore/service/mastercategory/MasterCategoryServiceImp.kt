@@ -1,6 +1,6 @@
 package com.project.saluyustore.service.mastercategory
 
-import com.project.saluyustore.entity.MasterCategories
+import com.project.saluyustore.entity.MasterCategory
 import com.project.saluyustore.model.request.CategoryRequest
 import com.project.saluyustore.repository.MasterCategoryRepository
 import com.project.saluyustore.util.HttpResponse
@@ -30,9 +30,9 @@ class MasterCategoryServiceImp(val masterCategoryRepository: MasterCategoryRepos
 
     override fun addCategory(categoryRequest: CategoryRequest): ResponseEntity<*> {
         return try {
-            val masterCategories = MasterCategories()
-            masterCategories.categoryDesc = categoryRequest.categoryDesc
-            val saveCategory = masterCategoryRepository.save(masterCategories)
+            val masterCategory = MasterCategory()
+            masterCategory.categoryDesc = categoryRequest.categoryDesc
+            val saveCategory = masterCategoryRepository.save(masterCategory)
             HttpResponse.setResp(saveCategory, "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
             HttpResponse.setResp<String>(message = e.message, status = HttpStatus.INTERNAL_SERVER_ERROR)

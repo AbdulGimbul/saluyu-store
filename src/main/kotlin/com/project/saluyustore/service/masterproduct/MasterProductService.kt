@@ -1,7 +1,7 @@
-package com.project.saluyustore.service.masteritems
+package com.project.saluyustore.service.masterproduct
 
 import org.springframework.http.ResponseEntity
 
-interface MasterItemsService {
+interface MasterProductService {
     fun getItems(): ResponseEntity<*>
 }

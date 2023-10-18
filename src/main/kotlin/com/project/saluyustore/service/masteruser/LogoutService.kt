@@ -1,4 +1,4 @@
-package com.project.saluyustore.service.masterusers
+package com.project.saluyustore.service.masteruser
 
 import com.project.saluyustore.repository.MasterUserRepository
 import jakarta.servlet.http.HttpServletRequest

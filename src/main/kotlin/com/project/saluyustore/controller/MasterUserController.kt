@@ -3,7 +3,7 @@ package com.project.saluyustore.controller
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.ListUserRequest
 import com.project.saluyustore.model.request.UpdateUserRequest
-import com.project.saluyustore.service.masterusers.MasterUsersService
+import com.project.saluyustore.service.masteruser.MasterUsersService
 import com.project.saluyustore.util.HttpResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/users")
 @Tag(name = "Master User")
-class MasterUsersController(val masterUsersService: MasterUsersService) {
+class MasterUserController(val masterUsersService: MasterUsersService) {
 
     @Operation(
         summary = "Register user",

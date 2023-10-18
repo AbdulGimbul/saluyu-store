@@ -2,7 +2,7 @@ package com.project.saluyustore.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.project.saluyustore.entity.MasterUsers
+import com.project.saluyustore.entity.MasterUser
 import com.project.saluyustore.entity.Role
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.LoginUserRequest
@@ -30,9 +30,9 @@ import java.util.*
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension::class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class MasterUsersControllerTest {
+class MasterUserControllerTest {
 
-    private val loggerFactory = LoggerFactory.getLogger(MasterUsersControllerTest::class.java)
+    private val loggerFactory = LoggerFactory.getLogger(MasterUserControllerTest::class.java)
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -141,7 +141,7 @@ class MasterUsersControllerTest {
             masterUserRepository.delete(user)
         }
 
-        val masterUsers = MasterUsers(
+        val masterUser = MasterUser(
             userName = "duplicate",
             email = "duplicate@example.com",
             userRole = Role.BUYER,
@@ -155,7 +155,7 @@ class MasterUsersControllerTest {
             tokenExpiredAt = System.currentTimeMillis() + 100000
         )
 
-        masterUserRepository.save(masterUsers)
+        masterUserRepository.save(masterUser)
 
         val request = CreateUserRequest(
             username = "email duplicate",
@@ -268,7 +268,7 @@ class MasterUsersControllerTest {
             masterUserRepository.delete(user)
         }
 
-        val masterUsers = MasterUsers(
+        val masterUser = MasterUser(
             userName = "delete",
             email = "delete@example.com",
             userRole = Role.BUYER,
@@ -282,7 +282,7 @@ class MasterUsersControllerTest {
             tokenExpiredAt = System.currentTimeMillis() + 100000
         )
 
-        val savedUser = masterUserRepository.save(masterUsers)
+        val savedUser = masterUserRepository.save(masterUser)
 
         mockMvc.perform(
             MockMvcRequestBuilders.delete("/api/users/${savedUser.userId}")

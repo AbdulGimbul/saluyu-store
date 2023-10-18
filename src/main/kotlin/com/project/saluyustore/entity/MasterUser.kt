@@ -22,7 +22,7 @@ data class MasterUser(
     var userActive: Boolean = false,
     @Column(name = "user_role")
     @Enumerated(EnumType.ORDINAL)
-    var userRole: Role = Role.SUPPLIER,
+    var userRole: Role = Role.BUYER,
     @Column(name = "created_at")
     val createdAt: Date? = null,
     @Column(name = "created_by")
@@ -33,7 +33,9 @@ data class MasterUser(
     var modifiedBy: String = "",
     var token: String? = null,
     @Column(name = "token_expired_at")
-    var tokenExpiredAt: Long? = null
+    var tokenExpiredAt: Long? = null,
+    @OneToOne(mappedBy = "masterUser", cascade = [CascadeType.ALL])
+    var detailUser: MasterUserDetail? = null
 ) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return mutableListOf(SimpleGrantedAuthority(userRole.name))

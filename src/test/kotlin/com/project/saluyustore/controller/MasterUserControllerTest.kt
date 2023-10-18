@@ -3,10 +3,12 @@ package com.project.saluyustore.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.project.saluyustore.entity.MasterUser
+import com.project.saluyustore.entity.MasterUserDetail
 import com.project.saluyustore.entity.Role
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.LoginUserRequest
 import com.project.saluyustore.model.request.UpdateUserRequest
+import com.project.saluyustore.repository.MasterUserDetailRepository
 import com.project.saluyustore.repository.MasterUserRepository
 import org.apache.commons.lang3.RandomStringUtils
 import org.junit.jupiter.api.BeforeEach
@@ -42,6 +44,9 @@ class MasterUserControllerTest {
 
     @Autowired
     private lateinit var masterUserRepository: MasterUserRepository
+
+    @Autowired
+    private lateinit var masterUserDetailRepository: MasterUserDetailRepository
 
     private lateinit var userToken: String
 
@@ -79,7 +84,9 @@ class MasterUserControllerTest {
     fun registerSuccess() {
         val user = masterUserRepository.findFirstByUserName("regis").orElse(null)
         if (user != null) {
+            val userDetail = masterUserDetailRepository.findById(user.userId).orElse(null)
             masterUserRepository.delete(user)
+            masterUserDetailRepository.delete(userDetail)
         }
 
         val pswd = RandomStringUtils.randomAlphanumeric(10)
@@ -138,7 +145,9 @@ class MasterUserControllerTest {
     fun registerDuplicate() {
         val user = masterUserRepository.findFirstByEmail("duplicate@example.com").orElse(null)
         if (user != null) {
+            val userDetail = masterUserDetailRepository.findById(user.userId).orElse(null)
             masterUserRepository.delete(user)
+            masterUserDetailRepository.delete(userDetail)
         }
 
         val masterUser = MasterUser(
@@ -156,6 +165,10 @@ class MasterUserControllerTest {
         )
 
         masterUserRepository.save(masterUser)
+
+        val detailUser = MasterUserDetail(userId = masterUser.userId)
+
+        masterUserDetailRepository.save(detailUser)
 
         val request = CreateUserRequest(
             username = "email duplicate",
@@ -265,7 +278,9 @@ class MasterUserControllerTest {
     fun deleteUser() {
         val user = masterUserRepository.findFirstByUserName("delete").orElse(null)
         if (user != null) {
+            val userDetail = masterUserDetailRepository.findById(user.userId).orElse(null)
             masterUserRepository.delete(user)
+            masterUserDetailRepository.delete(userDetail)
         }
 
         val masterUser = MasterUser(

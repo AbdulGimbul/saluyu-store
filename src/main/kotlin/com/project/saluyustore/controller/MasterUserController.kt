@@ -3,7 +3,7 @@ package com.project.saluyustore.controller
 import com.project.saluyustore.model.request.CreateUserRequest
 import com.project.saluyustore.model.request.ListUserRequest
 import com.project.saluyustore.model.request.UpdateUserRequest
-import com.project.saluyustore.service.masteruser.MasterUsersService
+import com.project.saluyustore.service.masteruser.MasterUserService
 import com.project.saluyustore.util.HttpResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/users")
 @Tag(name = "Master User")
-class MasterUserController(val masterUsersService: MasterUsersService) {
+class MasterUserController(val masterUserService: MasterUserService) {
 
     @Operation(
         summary = "Register user",
@@ -23,7 +23,7 @@ class MasterUserController(val masterUsersService: MasterUsersService) {
     @PostMapping
     fun createUser(@RequestBody body: CreateUserRequest): ResponseEntity<*> {
         return try {
-            val userResponse = masterUsersService.create(body)
+            val userResponse = masterUserService.create(body)
 
             HttpResponse.setResp(data = userResponse, message = "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
@@ -37,7 +37,7 @@ class MasterUserController(val masterUsersService: MasterUsersService) {
     @GetMapping("/{userId}")
     fun getUser(@PathVariable("userId") userId: Int): ResponseEntity<*> {
         return try {
-            val userResponse = masterUsersService.get(userId)
+            val userResponse = masterUserService.get(userId)
 
             HttpResponse.setResp(data = userResponse, message = "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
@@ -54,7 +54,7 @@ class MasterUserController(val masterUsersService: MasterUsersService) {
         @RequestBody updateUserRequest: UpdateUserRequest
     ): ResponseEntity<*> {
         return try {
-            val userResponse = masterUsersService.update(userId, updateUserRequest)
+            val userResponse = masterUserService.update(userId, updateUserRequest)
 
             HttpResponse.setResp(userResponse, "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
@@ -68,7 +68,7 @@ class MasterUserController(val masterUsersService: MasterUsersService) {
     @DeleteMapping("/{userId}")
     fun deleteUser(@PathVariable("userId") userId: Int): ResponseEntity<*> {
         return try {
-            masterUsersService.delete(userId)
+            masterUserService.delete(userId)
 
             HttpResponse.setResp<String>(message = "Success", status = HttpStatus.OK)
         } catch (e: Exception) {
@@ -86,7 +86,7 @@ class MasterUserController(val masterUsersService: MasterUsersService) {
     ): ResponseEntity<*> {
         return try {
             val request = ListUserRequest(page = page, size = size)
-            val responses = masterUsersService.list(request)
+            val responses = masterUserService.list(request)
 
             HttpResponse.setResp(responses, "Success", status = HttpStatus.OK)
         } catch (e: Exception) {

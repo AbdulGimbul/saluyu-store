@@ -5,7 +5,7 @@ import com.project.saluyustore.model.request.ListUserRequest
 import com.project.saluyustore.model.request.UpdateUserRequest
 import com.project.saluyustore.model.response.UserResponse
 
-interface MasterUsersService {
+interface MasterUserService {
 
     fun create(createUserRequest: CreateUserRequest): UserResponse
 

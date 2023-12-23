@@ -37,6 +37,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-common:2.2.0'
     testImplementation 'org.springframework.security:spring-security-test'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    implementation 'org.postgresql:postgresql'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.2'

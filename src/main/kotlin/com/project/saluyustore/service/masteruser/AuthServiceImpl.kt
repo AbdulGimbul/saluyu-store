@@ -4,6 +4,7 @@ import com.project.saluyustore.config.JwtService
 import com.project.saluyustore.entity.MasterUser
 import com.project.saluyustore.model.request.LoginUserRequest
 import com.project.saluyustore.model.response.UserLoginResponse
+import com.project.saluyustore.repository.MasterUserDetailRepository
 import com.project.saluyustore.repository.MasterUserRepository
 import com.project.saluyustore.util.NotFoundException
 import jakarta.servlet.http.HttpServletRequest
@@ -16,7 +17,8 @@ import org.springframework.stereotype.Service
 @Service
 @Slf4j
 class AuthServiceImpl(
-    val masterUserRepository: MasterUserRepository,
+    val userRepository: MasterUserRepository,
+    val userDetailRepository: MasterUserDetailRepository,
     val authManager: AuthenticationManager,
     val jwtService: JwtService
 ) : AuthService {
@@ -30,21 +32,26 @@ class AuthServiceImpl(
             )
         )
 
-        val userByUsername = masterUserRepository.findFirstByUserName(loginUserRequest.username)
+        val userByUsername = userRepository.findFirstByUserName(loginUserRequest.username)
             .orElseThrow()
 
         val jwtToken = jwtService.generateToken(userByUsername)
 
         userByUsername.token = jwtToken
         userByUsername.tokenExpiredAt = next7Days()
-        masterUserRepository.save(userByUsername)
+        userRepository.save(userByUsername)
 
+        val userDetail = userDetailRepository.findById(userByUsername.userId).orElseThrow()
 
         val userLoginResponse = UserLoginResponse(
             userId = userByUsername.userId,
+            fullName = userDetail.fullName,
             username = userByUsername.username,
             email = userByUsername.email,
-            roleId = userByUsername.userRole,
+            phoneNumber = userDetail.phoneNumber,
+            address = userDetail.address,
+            profilePicture = userDetail.profile_picture,
+            userRole = userByUsername.userRole,
             userToken = userByUsername.token
         )
 
@@ -56,7 +63,7 @@ class AuthServiceImpl(
     }
 
     private fun findByIdOrThrowNotFound(userId: Int): MasterUser {
-        val user = masterUserRepository.findByIdOrNull(userId)
+        val user = userRepository.findByIdOrNull(userId)
         if (user == null) {
             throw NotFoundException()
         } else {

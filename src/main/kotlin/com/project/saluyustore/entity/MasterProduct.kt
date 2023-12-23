@@ -7,21 +7,24 @@ import java.sql.Date
 @Table(name = "master_product")
 data class MasterProduct(
     @field:Id
-    @field:GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @field:Column(name = "item_id")
-    var itemId: Long? = null,
-    @field:Column(name = "item_name")
-    var itemName: String? = null,
-    var category: Int? = null,
-    var unit: String? = null,
+    @field:GeneratedValue
+    @field:Column(name = "product_id")
+    var productId: Int = 0,
+    @field:Column(name = "product_name")
+    var productName: String = "",
+    @field:ManyToOne(fetch = FetchType.LAZY)
+    @field:JoinColumn(name = "category_id")
+    var categoryId: MasterCategory? = null,
+    var unit: String = "",
     @field:Column(name = "unit_price")
     var unitPrice: Long? = null,
-    @field:Column(name = "item_stock")
-    var itemStock: Int? = null,
-    @field:Column(name = "picture_item")
-    var pictureItem: String? = null,
+    @field:Column(name = "product_stock")
+    var productStock: Int = 0,
+    @field:Column(name = "picture_product")
+    var pictureProduct: String = "",
     @field:Column(name = "updated_at")
-    var updatedAt: Date? = null,
-    @field:Column(name = "user_id")
-    var userId: String? = null
+    var updatedAt: java.util.Date? = null,
+    @field:ManyToOne(fetch = FetchType.LAZY)
+    @field:JoinColumn(name = "user_id")
+    var userId: MasterUser? = null
 )

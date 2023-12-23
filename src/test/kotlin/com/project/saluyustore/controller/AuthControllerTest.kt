@@ -78,26 +78,26 @@ class AuthControllerTest {
 
     @Test
     fun logout() {
-        val user = masterUserRepository.findFirstByUserName("testlogout").orElse(null)
-        if (user != null) {
-            masterUserRepository.delete(user)
-        }
-
-        val masterUser = MasterUser(
-            userName = "testlogout",
-            email = "testlogout@example.com",
-            userRole = Role.BUYER,
-            passwd = BCrypt.hashpw("testlogout", BCrypt.gensalt()),
-            createdAt = Date(),
-            createdBy = "testlogout",
-            modifiedAt = Date(),
-            modifiedBy = "testlogout",
-            userActive = true,
-            token = "testlogout",
-            tokenExpiredAt = System.currentTimeMillis() + 100000
-        )
-
-        masterUserRepository.save(masterUser)
+    //        val user = masterUserRepository.findFirstByUserName("testlogout").orElse(null)
+    //        if (user != null) {
+    //            masterUserRepository.delete(user)
+    //        }
+    //
+    //        val masterUser = MasterUser(
+    //            userName = "testlogout",
+    //            email = "testlogout@example.com",
+    //            userRole = Role.BUYER,
+    //            passwd = BCrypt.hashpw("testlogout", BCrypt.gensalt()),
+    //            createdAt = Date(),
+    //            createdBy = "testlogout",
+    //            modifiedAt = Date(),
+    //            modifiedBy = "testlogout",
+    //            userActive = true,
+    //            token = "testlogout",
+    //            tokenExpiredAt = System.currentTimeMillis() + 100000
+    //        )
+    //
+    //        masterUserRepository.save(masterUser)
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/auth/logout")

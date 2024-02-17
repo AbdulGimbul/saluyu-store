@@ -2,21 +2,17 @@ package com.project.saluyustore.service.masterproduct
 
 import com.project.saluyustore.config.ValidationUtil
 import com.project.saluyustore.entity.MasterProduct
-import com.project.saluyustore.entity.MasterUser
 import com.project.saluyustore.model.request.CreateProductRequest
 import com.project.saluyustore.model.request.UpdateProductRequest
 import com.project.saluyustore.model.response.ProductResponse
-import com.project.saluyustore.model.response.UserResponse
 import com.project.saluyustore.repository.MasterCategoryRepository
 import com.project.saluyustore.repository.MasterProductRepository
 import com.project.saluyustore.repository.MasterUserRepository
 import com.project.saluyustore.util.HttpResponse
-import com.project.saluyustore.util.NotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import java.sql.Date
 
 @Service
 @Transactional
@@ -60,7 +56,8 @@ class MasterProductServiceImp(
             if (items.isEmpty()) {
                 throw Exception("Items is empty")
             }
-            HttpResponse.setResp(items, "Success", items.size, HttpStatus.OK)
+            val productResp = items.map { convertToProductResponse(it) }
+            HttpResponse.setResp(productResp, "Success", productResp.size, HttpStatus.OK)
         } catch (e: Exception) {
             HttpResponse.setResp<String>(message = e.message, status = HttpStatus.INTERNAL_SERVER_ERROR)
         }
@@ -97,7 +94,7 @@ class MasterProductServiceImp(
             productName = masterProduct.productName,
             category = masterProduct.categoryId?.categoryDesc, // assuming MasterCategory has a categoryName field
             unit = masterProduct.unit,
-            unit_price = masterProduct.unitPrice,
+            unitPrice = masterProduct.unitPrice,
             productStock = masterProduct.productStock.toString(),
             pictureProduct = masterProduct.pictureProduct,
             updatedAt = masterProduct.updatedAt

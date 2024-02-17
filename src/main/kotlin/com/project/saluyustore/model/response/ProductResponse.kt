@@ -1,6 +1,5 @@
 package com.project.saluyustore.model.response
 
-import com.project.saluyustore.entity.Role
 import java.util.*
 
 data class ProductResponse(
@@ -10,7 +9,7 @@ data class ProductResponse(
     val productName: String,
     val category: String?,
     val unit: String,
-    val unit_price: Long?,
+    val unitPrice: Long?,
     val productStock: String,
     val pictureProduct: String,
     val updatedAt: Date?

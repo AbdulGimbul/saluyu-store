@@ -50,7 +50,7 @@ class AuthServiceImpl(
             email = userByUsername.email,
             phoneNumber = userDetail.phoneNumber,
             address = userDetail.address,
-            profilePicture = userDetail.profile_picture,
+            profilePicture = userDetail.profilePicture,
             userRole = userByUsername.userRole,
             userToken = userByUsername.token
         )

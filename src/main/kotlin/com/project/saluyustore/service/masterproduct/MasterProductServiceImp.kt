@@ -2,6 +2,7 @@ package com.project.saluyustore.service.masterproduct
 
 import com.project.saluyustore.config.ValidationUtil
 import com.project.saluyustore.entity.MasterProduct
+import com.project.saluyustore.entity.toProductResponse
 import com.project.saluyustore.model.request.CreateProductRequest
 import com.project.saluyustore.model.request.UpdateProductRequest
 import com.project.saluyustore.model.response.ProductResponse
@@ -47,17 +48,18 @@ class MasterProductServiceImp(
 
         masterProductRepository.save(masterProduct)
 
-        return convertToProductResponse(masterProduct)
+        return masterProduct.toProductResponse()
     }
+
 
     override fun getProducts(): ResponseEntity<*> {
         return try {
-            val items = masterProductRepository.findAll();
+            val items = masterProductRepository.findAll()
             if (items.isEmpty()) {
                 throw Exception("Items is empty")
             }
-            val productResp = items.map { convertToProductResponse(it) }
-            HttpResponse.setResp(productResp, "Success", productResp.size, HttpStatus.OK)
+            val productResponses = items.map { data -> data.toProductResponse() }
+            HttpResponse.setResp(productResponses, "Success", productResponses.size, HttpStatus.OK)
         } catch (e: Exception) {
             HttpResponse.setResp<String>(message = e.message, status = HttpStatus.INTERNAL_SERVER_ERROR)
         }
@@ -84,20 +86,6 @@ class MasterProductServiceImp(
 
         masterProductRepository.save(product)
 
-        return convertToProductResponse(product)
-    }
-
-    fun convertToProductResponse(masterProduct: MasterProduct): ProductResponse {
-        return ProductResponse(
-            user = masterProduct.userId?.userName, // assuming MasterUser has a userId field
-            productId = masterProduct.productId,
-            productName = masterProduct.productName,
-            category = masterProduct.categoryId?.categoryDesc, // assuming MasterCategory has a categoryName field
-            unit = masterProduct.unit,
-            unitPrice = masterProduct.unitPrice,
-            productStock = masterProduct.productStock.toString(),
-            pictureProduct = masterProduct.pictureProduct,
-            updatedAt = masterProduct.updatedAt
-        )
+        return product.toProductResponse()
     }
 }

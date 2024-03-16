@@ -12,7 +12,8 @@ data class MasterUserDetail(
     @Column(name = "full_name")
     var fullName: String = "",
     var address: String = "",
-    var profile_picture: String = "",
+    @Column(name = "profile_picture")
+    var profilePicture: String = "",
     @Column(name = "phone_number")
     var phoneNumber: String = "",
     @Column(name = "modified_at")

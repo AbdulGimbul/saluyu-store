@@ -123,7 +123,7 @@ class MasterUserServiceImpl(
             email = user.email,
             phoneNumber = userDetail.phoneNumber,
             address = userDetail.address,
-            profilePicture = userDetail.profile_picture,
+            profilePicture = userDetail.profilePicture,
             userActive = user.userActive,
             userRole = user.userRole,
             createdAt = user.createdAt,

@@ -32,9 +32,20 @@ class MasterProductController(private val masterProductService: MasterProductSer
     fun update(
         @PathVariable("productId") productId: Int,
         @RequestBody body: UpdateProductRequest
-    ): ResponseEntity<*>{
+    ): ResponseEntity<*> {
         return try {
             val productResponse = masterProductService.update(productId, body)
+
+            HttpResponse.setResp(data = productResponse, message = "Success", status = HttpStatus.OK)
+        } catch (e: Exception) {
+            HttpResponse.setResp<String>(message = e.message, status = HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    @PostMapping("/init-data")
+    fun initData(): ResponseEntity<*> {
+        return try {
+            val productResponse = masterProductService.initData()
 
             HttpResponse.setResp(data = productResponse, message = "Success", status = HttpStatus.OK)
         } catch (e: Exception) {

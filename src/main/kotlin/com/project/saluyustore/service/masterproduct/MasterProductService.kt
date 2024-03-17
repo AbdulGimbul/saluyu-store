@@ -13,4 +13,6 @@ interface MasterProductService {
     fun getProducts(): ResponseEntity<*>
 
     fun update(productId: Int, updateProductRequest: UpdateProductRequest): ProductResponse
+
+    fun initData(): List<ProductResponse>
 }
